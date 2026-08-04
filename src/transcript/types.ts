@@ -25,3 +25,22 @@ export interface NormalizedMessage {
 export interface TranscriptMessage extends NormalizedMessage {
   key: string;
 }
+
+export interface ParsedWindow {
+  messages: NormalizedMessage[];
+  anchorIndex?: number;
+}
+
+export interface AnchorSnapshot {
+  signature: string;
+  /** Zero-based occurrence among equal signatures in the parsed window. */
+  occurrenceInWindow: number;
+  previousSignature?: string;
+  nextSignature?: string;
+}
+
+export interface MergeState {
+  messages: TranscriptMessage[];
+  nextKey: number;
+  anchorKey?: string;
+}
