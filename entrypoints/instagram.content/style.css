@@ -1,5 +1,6 @@
 .dm2text-root {
   all: initial;
+  contain: style;
   position: relative;
   z-index: 2147483647;
 }
