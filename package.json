@@ -13,6 +13,8 @@
     "postinstall": "wxt prepare"
   },
   "devDependencies": {
+    "@types/jsdom": "^28.0.3",
+    "jsdom": "^30.0.1",
     "typescript": "latest",
     "vitest": "latest",
     "wxt": "latest"

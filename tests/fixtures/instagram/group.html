@@ -1,0 +1,53 @@
+<main>
+  <nav aria-label="Conversation list">
+    <button type="button">irrelevant-conversation</button>
+  </nav>
+  <section aria-label="Active chat">
+    <div
+      aria-label="Messages"
+      style="display: flex; flex-direction: column-reverse; overflow-y: scroll"
+    >
+      <div>
+        <div role="separator" aria-label="29/7/2026">29/7/2026</div>
+        <div role="row" aria-label="Message">
+          <a href="/person-a/" aria-label="Profile of Person A">
+            <img src="/avatar-a.png" alt="Person A" />
+          </a>
+          <span aria-label="Sender">Person A</span>
+          <time>14:16</time>
+          <blockquote aria-label="Reply preview">
+            <span aria-label="Replied-to sender">Person A</span>
+            <span dir="auto">message-one</span>
+          </blockquote>
+          <div dir="auto">message-two</div>
+          <div aria-label="Message actions">
+            <div role="button" aria-label="React"></div>
+            <div role="button" aria-label="Reply"></div>
+            <div role="button" aria-label="More"></div>
+          </div>
+        </div>
+        <div role="row" aria-label="Sent by you">
+          <time>14:17</time>
+          <div dir="auto">message-repeat</div>
+          <div aria-label="Message actions">
+            <div role="button" aria-label="React"></div>
+            <div role="button" aria-label="Reply"></div>
+            <div role="button" aria-label="More"></div>
+          </div>
+        </div>
+        <div role="row" aria-label="Message">
+          <a href="/person-b/" aria-label="Profile of Person B">
+            <img src="/avatar-b.png" alt="Person B" />
+          </a>
+          <span aria-label="Sender">Person B</span>
+          <div dir="auto">message-repeat</div>
+          <div aria-label="Message actions">
+            <div role="button" aria-label="React"></div>
+            <div role="button" aria-label="Reply"></div>
+            <div role="button" aria-label="More"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
