@@ -390,6 +390,30 @@ describe('Instagram DOM adapter', () => {
       content: { type: 'text', text: 'Outgoing text' },
     });
   });
+
+  it('parses an emoji-only message without treating its adjacent date as content', () => {
+    document.body.innerHTML = `
+      <div id="scroller"><div>
+        <div>
+          <div><div><span dir="auto">mar, 1:39</span></div></div>
+          <div role="group">
+            <a href="/person-a/" aria-label="Open the profile page of Person A">
+              <img alt="user-profile-picture" />
+            </a>
+            <div role="none"><span>🐥</span></div>
+          </div>
+        </div>
+        <div></div><div></div><div></div><div></div>
+      </div></div>
+    `;
+
+    expect(parseMountedWindow(requiredElement('#scroller')).messages).toMatchObject([
+      {
+        sender: 'Person A',
+        content: { type: 'text', text: '🐥' },
+      },
+    ]);
+  });
 });
 
 function loadFixture(name: 'group' | 'individual' | 'special-messages'): void {

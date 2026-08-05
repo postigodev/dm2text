@@ -16,7 +16,6 @@ import {
   SHARED_POST_PERMALINK_SELECTOR,
   SHARED_POST_PREVIEW_SELECTOR,
   SHARED_POST_SOURCE_LINK_SELECTOR,
-  TEXT_CONTENT_SELECTOR,
   TIME_SELECTOR,
 } from './selectors';
 
@@ -131,16 +130,18 @@ function isInsideEmbeddedContent(
 }
 
 function findMessageLevelContentRoot(root: HTMLElement): HTMLElement {
-  const specializedCard = root
+  const contentScope = findMessageContentScope(root);
+  const specializedCard = contentScope
     .querySelector(SHARED_POST_PERMALINK_SELECTOR)
     ?.closest<HTMLElement>('[role="button"]');
   const candidate =
     specializedCard?.parentElement ??
-    findLeafTextNodes(root)
+    findLeafTextNodes(contentScope)
       .filter((element) => !isInsideEmbeddedContent(element, root))
       .at(-1) ??
-    findMedia(root) ??
-    root;
+    findEmojiOnlyTextNode(contentScope) ??
+    findMedia(contentScope) ??
+    contentScope;
 
   return candidate;
 }
@@ -184,9 +185,10 @@ function parseContent(
     return answer ? { type: 'text', text: answer } : null;
   }
 
+  const contentScope = findMessageContentScope(root);
   const textRoot =
-    root.querySelector<HTMLElement>(TEXT_CONTENT_SELECTOR) ??
-    findLeafTextNodes(root).at(-1);
+    findLeafTextNodes(contentScope).at(-1) ??
+    findEmojiOnlyTextNode(contentScope);
   const text = normalizeMultiline(textRoot?.textContent ?? '');
   const media = findMedia(root);
   const label = media ? parseMediaLabel(media) : '';
@@ -366,6 +368,26 @@ function parseProfileSender(link: HTMLAnchorElement | null): string {
 function findLeafTextNodes(root: HTMLElement): HTMLElement[] {
   return Array.from(root.querySelectorAll<HTMLElement>('[dir="auto"]')).filter(
     (candidate) => candidate.querySelector('[dir="auto"]') === null,
+  );
+}
+
+function findMessageContentScope(root: HTMLElement): HTMLElement {
+  return root.querySelector<HTMLElement>('[role="group"]') ?? root;
+}
+
+function findEmojiOnlyTextNode(root: HTMLElement): HTMLElement | undefined {
+  return Array.from(root.querySelectorAll<HTMLElement>('span')).find(
+    (candidate) => {
+      if (candidate.children.length > 0) return false;
+      const text = normalizeInline(candidate.textContent ?? '');
+      return (
+        text.length > 0 &&
+        /\p{Extended_Pictographic}/u.test(text) &&
+        /^(?:\p{Extended_Pictographic}|\p{Emoji_Modifier}|\u200d|\ufe0f)+$/u.test(
+          text,
+        )
+      );
+    },
   );
 }
 
