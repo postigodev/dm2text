@@ -271,7 +271,7 @@ describe('Instagram DOM adapter', () => {
 
     expect(parseMessage(requiredElement('#meta-answer'))?.content).toEqual({
       type: 'text',
-      text: 'A substantive answer.',
+      text: 'A substantive answer.\nSecond paragraph.',
     });
     expect(parseMessage(requiredElement('#meta-badge-only'))).toBeNull();
   });
@@ -327,6 +327,38 @@ describe('Instagram DOM adapter', () => {
         scroller: requiredElement('#scroller'),
       })?.sender,
     ).toBe('Unknown');
+  });
+
+  it('does not treat a message-level user avatar as message media', () => {
+    document.body.innerHTML = `
+      <div id="scroller">
+        <div id="message">
+          <div role="group">
+            <div>
+              <div style="display:flex;flex-direction:column">
+                <div style="display:flex;align-items:flex-end;justify-content:flex-end">
+                  <div style="display:flex;align-items:center;flex-direction:row-reverse">
+                    <div role="presentation">
+                      <span dir="auto">Outgoing text</span>
+                    </div>
+                  </div>
+                </div>
+                <img alt="Avatar del usuario" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    expect(
+      parseMessage(requiredElement('#message'), {
+        scroller: requiredElement('#scroller'),
+      }),
+    ).toMatchObject({
+      sender: 'You',
+      content: { type: 'text', text: 'Outgoing text' },
+    });
   });
 });
 
