@@ -275,6 +275,59 @@ describe('Instagram DOM adapter', () => {
     });
     expect(parseMessage(requiredElement('#meta-badge-only'))).toBeNull();
   });
+
+  it('does not use a profile nested in a shared card as the outer sender', () => {
+    document.body.innerHTML = `
+      <div id="scroller">
+        <div id="message">
+          <div role="group">
+            <div style="display:flex;align-items:flex-end;justify-content:flex-end">
+              <div style="display:flex;align-items:center;flex-direction:row-reverse">
+                <div role="button" data-shared-post-card>
+                  <a href="/nested.source/" aria-label="Profile of nested.source">
+                    <img alt="user-profile-picture" />
+                  </a>
+                  <a href="/p/nested-post/"><img alt="Photo" /></a>
+                  <div dir="auto">Nested caption</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    expect(
+      parseMessage(requiredElement('#message'), {
+        scroller: requiredElement('#scroller'),
+      })?.sender,
+    ).toBe('You');
+  });
+
+  it('leaves an incoming card ambiguous instead of using its nested profile', () => {
+    document.body.innerHTML = `
+      <div id="scroller">
+        <div id="message">
+          <div role="group">
+            <div style="display:flex;align-items:flex-end;justify-content:flex-start">
+              <div role="button" data-shared-post-card>
+                <a href="/nested.source/" aria-label="Profile of nested.source">
+                  <img alt="user-profile-picture" />
+                </a>
+                <a href="/reel/nested-reel/"><video></video></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    expect(
+      parseMessage(requiredElement('#message'), {
+        scroller: requiredElement('#scroller'),
+      })?.sender,
+    ).toBe('Unknown');
+  });
 });
 
 function loadFixture(name: 'group' | 'individual' | 'special-messages'): void {

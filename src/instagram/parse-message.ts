@@ -4,6 +4,7 @@ import type {
   ReplyContext,
 } from '../transcript/types';
 import {
+  EMBEDDED_CONTENT_SELECTOR,
   MEDIA_SELECTOR,
   MESSAGE_ACTIONS_SELECTOR,
   OUTGOING_MESSAGE_SELECTOR,
@@ -66,15 +67,15 @@ function parseSender(
 ): string {
   if (root.matches(OUTGOING_MESSAGE_SELECTOR)) return 'You';
 
-  const visibleSender = normalizeInline(
-    root.querySelector<HTMLElement>(SENDER_SELECTOR)?.textContent ?? '',
-  );
+  const visibleSender = Array.from(
+    root.querySelectorAll<HTMLElement>(SENDER_SELECTOR),
+  )
+    .filter((candidate) => !isInsideEmbeddedContent(candidate, root))
+    .map((candidate) => normalizeInline(candidate.textContent ?? ''))
+    .find(Boolean);
   if (visibleSender) return visibleSender;
 
-  const profileLink = root.querySelector<HTMLAnchorElement>(
-    PROFILE_LINK_SELECTOR,
-  );
-  const profileSender = parseProfileSender(profileLink);
+  const profileSender = parseProfileSender(findMessageLevelProfileLink(root));
   if (profileSender) return profileSender;
 
   return inferSenderFromGeometry(root, context, allowLayoutInference);
@@ -88,7 +89,7 @@ function inferSenderFromGeometry(
   const { scroller } = context;
   if (!scroller) return 'Unknown';
 
-  const contentRoot = findLeafTextNodes(root).at(-1) ?? findMedia(root) ?? root;
+  const contentRoot = findMessageLevelContentRoot(root);
   if (allowLayoutInference && hasOutgoingLayout(contentRoot, root)) return 'You';
 
   const rootRect = contentRoot.getBoundingClientRect();
@@ -99,6 +100,44 @@ function inferSenderFromGeometry(
   const scrollerCenter = scrollerRect.left + scrollerRect.width / 2;
   if (rootCenter > scrollerCenter) return 'You';
   return 'Unknown';
+}
+
+function findMessageLevelProfileLink(
+  root: HTMLElement,
+): HTMLAnchorElement | null {
+  return (
+    Array.from(
+      root.querySelectorAll<HTMLAnchorElement>(PROFILE_LINK_SELECTOR),
+    ).find((candidate) => !isInsideEmbeddedContent(candidate, root)) ?? null
+  );
+}
+
+function isInsideEmbeddedContent(
+  candidate: Element,
+  root: HTMLElement,
+): boolean {
+  const sharedPermalink = candidate
+    .closest<HTMLElement>('[role="button"]')
+    ?.querySelector(SHARED_POST_PERMALINK_SELECTOR);
+  if (sharedPermalink) return true;
+
+  const embedded = candidate.closest(EMBEDDED_CONTENT_SELECTOR);
+  return embedded !== null && embedded !== root;
+}
+
+function findMessageLevelContentRoot(root: HTMLElement): HTMLElement {
+  const specializedCard = root
+    .querySelector(SHARED_POST_PERMALINK_SELECTOR)
+    ?.closest<HTMLElement>('[role="button"]');
+  const candidate =
+    specializedCard?.parentElement ??
+    findLeafTextNodes(root)
+      .filter((element) => !isInsideEmbeddedContent(element, root))
+      .at(-1) ??
+    findMedia(root) ??
+    root;
+
+  return candidate;
 }
 
 function hasOutgoingLayout(
