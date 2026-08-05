@@ -39,8 +39,8 @@ describe('createInstagramCollectionPort', () => {
     await expect(resultPromise).resolves.toBe('timed-out');
   });
 
-  it('returns mutated from one child-list mutation', async () => {
-    const { activeScroller, anchorRoot } = mountScrollFixture();
+  it('ignores unrelated mutations and resolves after message roots change', async () => {
+    const { activeScroller, wrapper, anchorRoot } = mountScrollFixture();
     activeScroller.scrollBy = vi.fn();
     const port = createInstagramCollectionPort({
       scroller: activeScroller,
@@ -50,6 +50,15 @@ describe('createInstagramCollectionPort', () => {
 
     const resultPromise = port.scrollOlder(new AbortController().signal);
     activeScroller.append(document.createElement('div'));
+    let settled = false;
+    void resultPromise.then(() => {
+      settled = true;
+    });
+    await vi.advanceTimersByTimeAsync(100);
+
+    expect(settled).toBe(false);
+
+    wrapper.insertAdjacentHTML('afterbegin', messageMarkup('older'));
 
     await expect(resultPromise).resolves.toBe('mutated');
   });

@@ -60,13 +60,10 @@ export async function collectMessages({
       return result('complete', state, anchorKey, requested);
     }
 
-    if (!prefixProgress && port.isAtVisualTop()) {
-      return result('beginning', state, anchorKey, requested);
-    }
-
     consecutiveStalls = prefixProgress ? 0 : consecutiveStalls + 1;
     if (consecutiveStalls >= MAX_CONSECUTIVE_STALLS) {
-      return result('stalled', state, anchorKey, requested);
+      const status = port.isAtVisualTop() ? 'beginning' : 'stalled';
+      return result(status, state, anchorKey, requested);
     }
   }
 }

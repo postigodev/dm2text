@@ -30,7 +30,7 @@ describe('collectMessages', () => {
 
     expect(result.status).toBe('beginning');
     expect(signatures(result.messages)).toEqual(['a', 'anchor']);
-    expect(progress).toEqual([2, 2]);
+    expect(progress).toEqual([2, 2, 2, 2]);
   });
 
   it('collects through two upward loads', async () => {
@@ -138,12 +138,15 @@ describe('collectMessages', () => {
     expect(port.scrollOlder).toHaveBeenCalledTimes(3);
   });
 
-  it('infers beginning only after an attempted scroll at visual top with no progress', async () => {
-    const port = fakePort({ windows: [windowOf('a', 'b')], visualTop: true });
+  it('requires the full stall budget before accepting visual top as the beginning', async () => {
+    const port = fakePort({
+      windows: [windowOf('a', 'b'), windowOf('a', 'b'), windowOf('a', 'b')],
+      visualTop: true,
+    });
     const result = await collect(port, anchoredWindow(['a', 'b'], 1), 3);
 
     expect(result.status).toBe('beginning');
-    expect(port.scrollOlder).toHaveBeenCalledTimes(1);
+    expect(port.scrollOlder).toHaveBeenCalledTimes(3);
   });
 
   it('treats a DOM mutation without normalized growth as no progress', async () => {

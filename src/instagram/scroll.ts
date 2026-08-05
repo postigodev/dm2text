@@ -150,11 +150,18 @@ function createMutationWait(
   cancel(): void;
 } {
   signal.throwIfAborted();
+  const initialRoots = queryMessageRoots(target);
   let cancel = (): void => undefined;
 
   const promise = new Promise<'mutated' | 'timed-out'>((resolve, reject) => {
     let settled = false;
-    const observer = new MutationObserver(() => finish('mutated'));
+    const observer = new MutationObserver(() => {
+      const currentRoots = queryMessageRoots(target);
+      const rootsChanged =
+        currentRoots.length !== initialRoots.length ||
+        currentRoots.some((root, index) => root !== initialRoots[index]);
+      if (rootsChanged) finish('mutated');
+    });
     const timeout = window.setTimeout(
       () => finish('timed-out'),
       MUTATION_TIMEOUT_MS,

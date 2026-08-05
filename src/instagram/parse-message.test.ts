@@ -109,14 +109,14 @@ describe('Instagram DOM adapter', () => {
     expect(incoming?.signature).toBe(outgoing?.signature);
   });
 
-  it('inherits an explicit incoming sender across a grouped message run', () => {
+  it('backfills an explicit sender across the preceding incoming group', () => {
     document.body.innerHTML = `
       <div aria-label="Messages">
         <div role="row" aria-label="Message">
-          <span aria-label="Sender">Person A</span>
           <div dir="auto">first-message</div>
         </div>
         <div role="row" aria-label="Message">
+          <span aria-label="Sender">Person A</span>
           <div dir="auto">second-message</div>
         </div>
       </div>
@@ -125,16 +125,39 @@ describe('Instagram DOM adapter', () => {
     Object.defineProperty(scroller, 'getBoundingClientRect', {
       value: () => rect(0, 1_000),
     });
-    const secondContent = requiredElement(
-      '[role="row"]:last-child [dir="auto"]',
+    const firstContent = requiredElement(
+      '[role="row"]:first-child [dir="auto"]',
     );
-    Object.defineProperty(secondContent, 'getBoundingClientRect', {
+    Object.defineProperty(firstContent, 'getBoundingClientRect', {
       value: () => rect(100, 200),
     });
 
     expect(
       parseMountedWindow(scroller).messages.map(({ sender }) => sender),
     ).toEqual(['Person A', 'Person A']);
+  });
+
+  it('does not backfill an unknown sender across an outgoing boundary', () => {
+    document.body.innerHTML = `
+      <div aria-label="Messages">
+        <div role="row" aria-label="Message">
+          <div dir="auto">unresolved-message</div>
+        </div>
+        <div role="row" aria-label="Sent by you">
+          <div dir="auto">outgoing-message</div>
+        </div>
+        <div role="row" aria-label="Message">
+          <span aria-label="Sender">Person A</span>
+          <div dir="auto">resolved-message</div>
+        </div>
+      </div>
+    `;
+
+    expect(
+      parseMountedWindow(requiredElement('[aria-label="Messages"]')).messages.map(
+        ({ sender }) => sender,
+      ),
+    ).toEqual(['Unknown', 'You', 'Person A']);
   });
 });
 

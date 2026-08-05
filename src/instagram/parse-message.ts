@@ -17,7 +17,6 @@ import {
 export interface ParseMessageContext {
   date?: string;
   scroller?: HTMLElement;
-  previousIncomingSender?: string;
 }
 
 export function parseMessage(
@@ -85,9 +84,6 @@ function inferSenderFromGeometry(
   const rootCenter = rootRect.left + rootRect.width / 2;
   const scrollerCenter = scrollerRect.left + scrollerRect.width / 2;
   if (rootCenter > scrollerCenter) return 'You';
-  if (rootCenter < scrollerCenter) {
-    return context.previousIncomingSender ?? 'Unknown';
-  }
   return 'Unknown';
 }
 
