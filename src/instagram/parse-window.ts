@@ -12,6 +12,7 @@ export function parseMountedWindow(
 ): ParsedWindow {
   const messages: ParsedWindow['messages'] = [];
   let activeDate: string | undefined;
+  let previousIncomingSender: string | undefined;
   let anchorIndex: number | undefined;
   const semanticItems = scroller.querySelectorAll<HTMLElement>(
     `${DATE_SEPARATOR_SELECTOR}, ${MESSAGE_ROOT_SELECTOR}`,
@@ -32,8 +33,15 @@ export function parseMountedWindow(
     const parsed = parseMessage(item, {
       ...(activeDate ? { date: activeDate } : {}),
       scroller,
+      ...(previousIncomingSender ? { previousIncomingSender } : {}),
     });
     if (!parsed) continue;
+
+    if (parsed.sender === 'You') {
+      previousIncomingSender = undefined;
+    } else if (parsed.sender !== 'Unknown') {
+      previousIncomingSender = parsed.sender;
+    }
 
     if (item === anchorRoot) anchorIndex = messages.length;
     messages.push(parsed);

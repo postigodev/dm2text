@@ -17,6 +17,7 @@ import {
 export interface ParseMessageContext {
   date?: string;
   scroller?: HTMLElement;
+  previousIncomingSender?: string;
 }
 
 export function parseMessage(
@@ -36,10 +37,8 @@ export function parseMessage(
     : undefined;
   const reply = parseReply(root);
   const signature = JSON.stringify({
-    sender,
-    timestamp,
     content,
-    reply,
+    ...(reply ? { replyPreview: reply.preview } : {}),
   });
 
   return {
@@ -68,13 +67,14 @@ function parseSender(
   const profileSender = parseProfileSender(profileLink);
   if (profileSender) return profileSender;
 
-  return inferSenderFromGeometry(root, context.scroller);
+  return inferSenderFromGeometry(root, context);
 }
 
 function inferSenderFromGeometry(
   root: HTMLElement,
-  scroller: HTMLElement | undefined,
+  context: ParseMessageContext,
 ): string {
+  const { scroller } = context;
   if (!scroller) return 'Unknown';
 
   const contentRoot = findLeafTextNodes(root).at(-1) ?? findMedia(root) ?? root;
@@ -84,7 +84,11 @@ function inferSenderFromGeometry(
 
   const rootCenter = rootRect.left + rootRect.width / 2;
   const scrollerCenter = scrollerRect.left + scrollerRect.width / 2;
-  return rootCenter > scrollerCenter ? 'You' : 'Unknown';
+  if (rootCenter > scrollerCenter) return 'You';
+  if (rootCenter < scrollerCenter) {
+    return context.previousIncomingSender ?? 'Unknown';
+  }
+  return 'Unknown';
 }
 
 function parseContent(root: HTMLElement): MessageContent | null {

@@ -52,7 +52,12 @@ export function mergeWindow(
   ) {
     const existing = state.messages[coordinate];
     if (existing) {
-      merged.push(existing);
+      const incomingMessage = incoming.messages[coordinate - offset];
+      merged.push(
+        incomingMessage
+          ? reconcileAlignedMessage(existing, incomingMessage)
+          : existing,
+      );
       continue;
     }
 
@@ -68,6 +73,37 @@ export function mergeWindow(
     nextKey,
     ...(state.anchorKey ? { anchorKey: state.anchorKey } : {}),
   };
+}
+
+function reconcileAlignedMessage(
+  existing: TranscriptMessage,
+  incoming: NormalizedMessage,
+): TranscriptMessage {
+  const sender =
+    senderSpecificity(incoming.sender) > senderSpecificity(existing.sender)
+      ? incoming.sender
+      : existing.sender;
+
+  return {
+    ...existing,
+    sender,
+    ...(existing.timestamp
+      ? { timestamp: existing.timestamp }
+      : incoming.timestamp
+        ? { timestamp: incoming.timestamp }
+        : {}),
+    ...(existing.reply
+      ? { reply: existing.reply }
+      : incoming.reply
+        ? { reply: incoming.reply }
+        : {}),
+  };
+}
+
+function senderSpecificity(sender: string): number {
+  if (sender === 'Unknown') return 0;
+  if (sender === 'You') return 1;
+  return 2;
 }
 
 export function buildAnchorSnapshot(

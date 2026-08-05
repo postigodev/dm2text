@@ -72,6 +72,21 @@ describe('mergeWindow', () => {
       existingKeys,
     );
   });
+
+  it('enriches an aligned unknown sender without duplicating the message', () => {
+    const existing = mergeWindow(emptyState(), {
+      messages: [messageWithSender('same', 'Unknown')],
+    });
+    const merged = mergeWindow(existing, {
+      messages: [messageWithSender('same', 'Person A')],
+    });
+
+    expect(merged.messages).toHaveLength(1);
+    expect(merged.messages[0]).toMatchObject({
+      key: existing.messages[0]?.key,
+      sender: 'Person A',
+    });
+  });
 });
 
 describe('buildAnchorSnapshot', () => {
@@ -116,6 +131,17 @@ function message(signature: string): NormalizedMessage {
   return {
     signature,
     sender: 'You',
+    content: { type: 'text', text: signature },
+  };
+}
+
+function messageWithSender(
+  signature: string,
+  sender: string,
+): NormalizedMessage {
+  return {
+    signature,
+    sender,
     content: { type: 'text', text: signature },
   };
 }

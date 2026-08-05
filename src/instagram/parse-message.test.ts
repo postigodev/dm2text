@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { findMessageRoot, findMessageScroller } from './discovery';
+import { parseMessage } from './parse-message';
 import { parseMountedWindow } from './parse-window';
 
 describe('Instagram DOM adapter', () => {
@@ -88,6 +89,53 @@ describe('Instagram DOM adapter', () => {
     });
     expect(parsed.messages[2]?.timestamp).toBeUndefined();
   });
+
+  it('keeps message identity stable when sender evidence changes', () => {
+    document.body.innerHTML = `
+      <div id="incoming" role="row" aria-label="Message">
+        <span aria-label="Sender">Person A</span>
+        <div dir="auto">same-content</div>
+      </div>
+      <div id="outgoing" role="row" aria-label="Sent by you">
+        <div dir="auto">same-content</div>
+      </div>
+    `;
+
+    const incoming = parseMessage(requiredElement('#incoming'));
+    const outgoing = parseMessage(requiredElement('#outgoing'));
+
+    expect(incoming?.sender).toBe('Person A');
+    expect(outgoing?.sender).toBe('You');
+    expect(incoming?.signature).toBe(outgoing?.signature);
+  });
+
+  it('inherits an explicit incoming sender across a grouped message run', () => {
+    document.body.innerHTML = `
+      <div aria-label="Messages">
+        <div role="row" aria-label="Message">
+          <span aria-label="Sender">Person A</span>
+          <div dir="auto">first-message</div>
+        </div>
+        <div role="row" aria-label="Message">
+          <div dir="auto">second-message</div>
+        </div>
+      </div>
+    `;
+    const scroller = requiredElement('[aria-label="Messages"]');
+    Object.defineProperty(scroller, 'getBoundingClientRect', {
+      value: () => rect(0, 1_000),
+    });
+    const secondContent = requiredElement(
+      '[role="row"]:last-child [dir="auto"]',
+    );
+    Object.defineProperty(secondContent, 'getBoundingClientRect', {
+      value: () => rect(100, 200),
+    });
+
+    expect(
+      parseMountedWindow(scroller).messages.map(({ sender }) => sender),
+    ).toEqual(['Person A', 'Person A']);
+  });
 });
 
 function loadFixture(name: 'group' | 'individual'): void {
@@ -101,6 +149,26 @@ function requiredScroller(): HTMLElement {
   const scroller = findMessageScroller(document);
   if (!scroller) throw new Error('Fixture message scroller not found');
   return scroller;
+}
+
+function requiredElement(selector: string): HTMLElement {
+  const element = document.querySelector<HTMLElement>(selector);
+  if (!element) throw new Error(`Missing test element: ${selector}`);
+  return element;
+}
+
+function rect(left: number, width: number): DOMRect {
+  return {
+    x: left,
+    y: 0,
+    left,
+    right: left + width,
+    top: 0,
+    bottom: 20,
+    width,
+    height: 20,
+    toJSON: () => ({}),
+  };
 }
 
 function mountCurrentDomShape(): void {
