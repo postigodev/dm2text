@@ -237,9 +237,47 @@ describe('Instagram DOM adapter', () => {
       ),
     ).toEqual(['You', 'You']);
   });
+
+  it('parses shared posts structurally without a redundant media marker', () => {
+    loadFixture('special-messages');
+
+    expect(parseMessage(requiredElement('#shared-full'))?.content).toEqual({
+      type: 'shared-post',
+      source: 'source.account',
+      caption: 'First line\nSecond line',
+    });
+    expect(parseMessage(requiredElement('#shared-source-only'))?.content).toEqual({
+      type: 'shared-post',
+      source: 'source.only',
+    });
+    expect(parseMessage(requiredElement('#shared-caption-only'))?.content).toEqual({
+      type: 'shared-post',
+      caption: 'Caption without a visible source',
+    });
+  });
+
+  it('keeps shared-post signatures stable when sender evidence changes', () => {
+    loadFixture('special-messages');
+    const incoming = parseMessage(requiredElement('#shared-full'));
+    const clone = requiredElement('#shared-full').cloneNode(true) as HTMLElement;
+    clone.setAttribute('aria-label', 'Sent by you');
+    clone.querySelector('[aria-label="Sender"]')?.remove();
+
+    expect(incoming?.signature).toBe(parseMessage(clone)?.signature);
+  });
+
+  it('extracts a Meta AI answer instead of its presentation badge', () => {
+    loadFixture('special-messages');
+
+    expect(parseMessage(requiredElement('#meta-answer'))?.content).toEqual({
+      type: 'text',
+      text: 'A substantive answer.',
+    });
+    expect(parseMessage(requiredElement('#meta-badge-only'))).toBeNull();
+  });
 });
 
-function loadFixture(name: 'group' | 'individual'): void {
+function loadFixture(name: 'group' | 'individual' | 'special-messages'): void {
   document.body.innerHTML = readFileSync(
     `tests/fixtures/instagram/${name}.html`,
     'utf8',

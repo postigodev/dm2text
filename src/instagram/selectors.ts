@@ -14,6 +14,14 @@ export const PROFILE_LINK_SELECTOR = [
 ].join(', ');
 export const REPLY_SELECTOR = '[aria-label="Reply preview"]';
 export const REPLY_SENDER_SELECTOR = '[aria-label="Replied-to sender"]';
+export const SHARED_POST_PERMALINK_SELECTOR = [
+  'a[href*="/p/"]',
+  'a[href*="/reel/"]',
+].join(', ');
+export const EMBEDDED_CONTENT_SELECTOR = [
+  REPLY_SELECTOR,
+  '[data-shared-post-card]',
+].join(', ');
 export const TEXT_CONTENT_SELECTOR = ':scope > [dir="auto"]';
 export const TIME_SELECTOR = ':scope > time';
 export const MEDIA_SELECTOR = [
