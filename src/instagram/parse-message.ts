@@ -97,10 +97,15 @@ function hasOutgoingLayout(
 
   while (candidate && messageRoot.contains(candidate)) {
     const style = getComputedStyle(candidate);
+    const parent = candidate.parentElement;
+    const parentStyle = parent ? getComputedStyle(parent) : undefined;
     if (
       style.display === 'flex' &&
-      style.alignItems === 'flex-end' &&
-      style.justifyContent === 'flex-end'
+      style.alignItems === 'center' &&
+      style.flexDirection === 'row-reverse' &&
+      parentStyle?.display === 'flex' &&
+      parentStyle.alignItems === 'flex-end' &&
+      parentStyle.justifyContent === 'flex-end'
     ) {
       return true;
     }

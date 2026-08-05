@@ -166,7 +166,9 @@ describe('Instagram DOM adapter', () => {
         <div id="outgoing">
           <div role="group">
             <div style="display:flex;align-items:flex-end;justify-content:flex-end">
-              <div dir="auto">offscreen-message</div>
+              <div style="display:flex;align-items:center;flex-direction:row-reverse;justify-content:flex-start">
+                <div dir="auto">offscreen-message</div>
+              </div>
             </div>
           </div>
         </div>
@@ -178,6 +180,28 @@ describe('Instagram DOM adapter', () => {
         scroller: requiredElement('#scroller'),
       })?.sender,
     ).toBe('You');
+  });
+
+  it('does not treat an incoming media card alignment as outgoing', () => {
+    document.body.innerHTML = `
+      <div id="scroller">
+        <div id="incoming">
+          <div role="group">
+            <div style="display:flex;align-items:flex-end;justify-content:flex-start">
+              <div style="display:flex;align-items:flex-end;justify-content:flex-end">
+                <img alt="image" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    expect(
+      parseMessage(requiredElement('#incoming'), {
+        scroller: requiredElement('#scroller'),
+      })?.sender,
+    ).toBe('Unknown');
   });
 });
 

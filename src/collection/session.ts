@@ -6,7 +6,7 @@ import type {
   CollectMessagesOptions,
 } from './port';
 
-const MAX_CONSECUTIVE_STALLS = 3;
+const MAX_CONSECUTIVE_STALLS = 5;
 
 export async function collectMessages({
   port,
