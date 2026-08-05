@@ -42,6 +42,16 @@ function formatReply(reply: ReplyContext | undefined): string {
 }
 
 function formatContent(content: MessageContent): string {
+  if (content.type === 'shared-post') {
+    const source = normalizeInline(content.source ?? '');
+    const caption = normalizeMessageText(content.caption ?? '');
+    const header = source
+      ? `[shared post by ${source}]`
+      : '[shared post]';
+
+    return caption ? `${header}\n  Caption: ${caption}` : header;
+  }
+
   if (content.type === 'text') {
     return normalizeMessageText(content.text);
   }

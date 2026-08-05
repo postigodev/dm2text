@@ -125,4 +125,50 @@ describe('formatTranscript', () => {
       ].join('\n'),
     );
   });
+
+  it('formats a shared post with its source and multiline caption', () => {
+    expect(
+      formatTranscript([
+        {
+          key: 'shared',
+          signature: 'shared',
+          sender: 'Person A',
+          content: {
+            type: 'shared-post',
+            source: 'source.account',
+            caption: 'First line\nSecond line',
+          },
+        },
+      ]),
+    ).toBe(
+      'Person A: [shared post by source.account]\n' +
+        '  Caption: First line\\nSecond line',
+    );
+  });
+
+  it('formats partial shared posts without inventing missing fields', () => {
+    const messages: TranscriptMessage[] = [
+      {
+        key: 'source-only',
+        signature: 'source-only',
+        sender: 'Person A',
+        content: { type: 'shared-post', source: 'source.account' },
+      },
+      {
+        key: 'caption-only',
+        signature: 'caption-only',
+        sender: 'You',
+        content: { type: 'shared-post', caption: 'Visible caption' },
+        reply: { sender: 'Person A', preview: 'Earlier message' },
+      },
+    ];
+
+    expect(formatTranscript(messages)).toBe(
+      [
+        'Person A: [shared post by source.account]',
+        'You (replying to Person A: Earlier message): [shared post]',
+        '  Caption: Visible caption',
+      ].join('\n'),
+    );
+  });
 });

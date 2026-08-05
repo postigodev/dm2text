@@ -1,7 +1,8 @@
 export type MessageContent =
   | { type: 'text'; text: string }
   | { type: 'media'; label: string }
-  | { type: 'mixed'; text: string; label: string };
+  | { type: 'mixed'; text: string; label: string }
+  | { type: 'shared-post'; source?: string; caption?: string };
 
 export interface TimestampParts {
   time: string;
