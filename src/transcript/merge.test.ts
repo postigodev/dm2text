@@ -87,6 +87,40 @@ describe('mergeWindow', () => {
       sender: 'Person A',
     });
   });
+
+  it('uses stable neighboring evidence when one overlap signature changes', () => {
+    const initial = mergeWindow(
+      emptyState(),
+      windowOf('c', 'd', 'anchor', 'post-anchor', { anchorIndex: 2 }),
+    );
+    const merged = mergeWindow(
+      initial,
+      windowOf('a', 'b', 'c', 'd', 'anchor-variant', 'post-anchor'),
+    );
+
+    expect(signatures(merged.messages)).toEqual([
+      'a',
+      'b',
+      'c',
+      'd',
+      'anchor',
+      'post-anchor',
+    ]);
+    expect(
+      selectEndingAt(merged.messages, merged.anchorKey!, 10).map(
+        ({ signature }) => signature,
+      ),
+    ).toEqual(['a', 'b', 'c', 'd', 'anchor']);
+  });
+
+  it('ignores an unrelated window instead of prepending it speculatively', () => {
+    const existing = stateOf('a', 'b');
+
+    expect(signatures(mergeWindow(existing, windowOf('x', 'y')).messages)).toEqual([
+      'a',
+      'b',
+    ]);
+  });
 });
 
 describe('buildAnchorSnapshot', () => {
