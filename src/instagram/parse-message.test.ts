@@ -182,6 +182,34 @@ describe('Instagram DOM adapter', () => {
     ).toBe('You');
   });
 
+  it('prefers measurable incoming geometry over nested outgoing flex', () => {
+    document.body.innerHTML = `
+      <div id="scroller">
+        <div id="incoming">
+          <div role="group">
+            <div style="display:flex;align-items:flex-end;justify-content:flex-end">
+              <div style="display:flex;align-items:center;flex-direction:row-reverse">
+                <div dir="auto">incoming-with-reaction-layout</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    const scroller = requiredElement('#scroller');
+    const content = requiredElement('[dir="auto"]');
+    Object.defineProperty(scroller, 'getBoundingClientRect', {
+      value: () => rect(0, 1_000),
+    });
+    Object.defineProperty(content, 'getBoundingClientRect', {
+      value: () => rect(100, 200),
+    });
+
+    expect(parseMessage(requiredElement('#incoming'), { scroller })?.sender).toBe(
+      'Unknown',
+    );
+  });
+
   it('does not treat an incoming media card alignment as outgoing', () => {
     document.body.innerHTML = `
       <div id="scroller">

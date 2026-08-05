@@ -95,15 +95,15 @@ function inferSenderFromGeometry(
   if (!scroller) return 'Unknown';
 
   const contentRoot = findMessageLevelContentRoot(root);
-  if (allowLayoutInference && hasOutgoingLayout(contentRoot, root)) return 'You';
-
   const rootRect = contentRoot.getBoundingClientRect();
   const scrollerRect = scroller.getBoundingClientRect();
-  if (rootRect.width <= 0 || scrollerRect.width <= 0) return 'Unknown';
+  if (rootRect.width > 0 && scrollerRect.width > 0) {
+    const rootCenter = rootRect.left + rootRect.width / 2;
+    const scrollerCenter = scrollerRect.left + scrollerRect.width / 2;
+    return rootCenter > scrollerCenter ? 'You' : 'Unknown';
+  }
 
-  const rootCenter = rootRect.left + rootRect.width / 2;
-  const scrollerCenter = scrollerRect.left + scrollerRect.width / 2;
-  if (rootCenter > scrollerCenter) return 'You';
+  if (allowLayoutInference && hasOutgoingLayout(contentRoot, root)) return 'You';
   return 'Unknown';
 }
 
@@ -247,10 +247,17 @@ function findStructuralSharedPost(
   for (const preview of previews) {
     if (!preview.querySelector('img, video')) continue;
 
-    const header = preview.previousElementSibling;
-    const sourceLink = header?.querySelector<HTMLAnchorElement>(
+    const headerSourceLink = preview.previousElementSibling?.querySelector<HTMLAnchorElement>(
       SHARED_POST_SOURCE_LINK_SELECTOR,
     );
+    const mediaCount = preview.querySelectorAll('img, video').length;
+    const embeddedSourceLink =
+      mediaCount >= 2
+        ? preview.querySelector<HTMLAnchorElement>(
+            SHARED_POST_SOURCE_LINK_SELECTOR,
+          )
+        : null;
+    const sourceLink = headerSourceLink ?? embeddedSourceLink;
     const source = normalizeInline(sourceLink?.textContent ?? '');
     if (!source) continue;
 
