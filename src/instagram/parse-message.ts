@@ -259,6 +259,7 @@ function findStructuralSharedPost(
       .filter(Boolean)
       .join('\n');
     if (
+      previewText &&
       previewText !== source &&
       !previewText.startsWith(`${source} `) &&
       !previewText.startsWith(`${source}\n`)
@@ -382,7 +383,6 @@ function isProfileChromeImage(candidate: HTMLElement): boolean {
 
   const alt = normalizeInline(candidate.alt).toLocaleLowerCase();
   if (alt === 'user-profile-picture') return true;
-  if (candidate.closest('button, [role="button"]')) return false;
 
   return /(?:avatar del usuario|user avatar|profile picture|foto de perfil)/u.test(
     alt,

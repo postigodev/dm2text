@@ -343,7 +343,9 @@ describe('Instagram DOM adapter', () => {
                     </div>
                   </div>
                 </div>
-                <img alt="Avatar del usuario" />
+                <div role="button">
+                  <img alt="Avatar del usuario" />
+                </div>
               </div>
             </div>
           </div>
