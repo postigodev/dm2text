@@ -287,12 +287,18 @@ export const EMBEDDED_CONTENT_SELECTOR = [
 
 - [ ] **Step 5: Add specialized content parsing before the generic fallback**
 
-Import `SHARED_POST_PERMALINK_SELECTOR` in `src/instagram/parse-message.ts`. Change the start of `parseMessage` to resolve the sender before content:
+Import `SHARED_POST_PERMALINK_SELECTOR` in `src/instagram/parse-message.ts`. Change the start of `parseMessage` to resolve explicit sender evidence before content, then use geometry only for ambiguous text and shared-post structures:
 
 ```ts
-const sender = parseSender(root, context, true);
-const content = parseContent(root, sender);
+const initialSender = parseSender(root, context, false);
+const content = parseContent(root, initialSender);
 if (!content) return null;
+const allowLayoutInference =
+  content.type === 'text' || content.type === 'shared-post';
+const sender =
+  initialSender === 'Unknown' && allowLayoutInference
+    ? parseSender(root, context, true)
+    : initialSender;
 ```
 
 Remove the later duplicate `sender` declaration. Change `parseContent` and add these helpers:
@@ -360,7 +366,7 @@ function parseMetaAiAnswer(root: HTMLElement): string {
 }
 ```
 
-Also import `MESSAGE_ACTIONS_SELECTOR`. Pass `true` temporarily to `parseSender`; Task 3 replaces this with message-level content inference.
+Also import `MESSAGE_ACTIONS_SELECTOR`. This two-pass sender resolution preserves the existing rule that generic media alignment is not sufficient to infer `You`, while allowing an outer shared-post wrapper to be evaluated after the content has been classified.
 
 - [ ] **Step 6: Run the special-content tests**
 
@@ -531,13 +537,7 @@ function findMessageLevelContentRoot(root: HTMLElement): HTMLElement {
 }
 ```
 
-In `parseMessage`, derive whether layout inference is allowed from message-level content rather than `content.type`:
-
-```ts
-const sender = parseSender(root, context, true);
-```
-
-Keep the established `hasOutgoingLayout` ancestor walk, which now begins at the outer card wrapper instead of an internally aligned descendant.
+Keep the two-pass `parseMessage` flow from Task 2 and the established `hasOutgoingLayout` ancestor walk. For shared posts, that walk now begins at the outer card wrapper instead of an internally aligned descendant. Generic media continues to skip layout inference entirely.
 
 - [ ] **Step 5: Run the full Instagram adapter suite**
 
