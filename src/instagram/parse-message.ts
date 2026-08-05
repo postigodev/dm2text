@@ -26,7 +26,7 @@ export function parseMessage(
   const content = parseContent(root);
   if (!content) return null;
 
-  const sender = parseSender(root, context);
+  const sender = parseSender(root, context, content.type === 'text');
   const time = normalizeInline(
     root.querySelector<HTMLElement>(TIME_SELECTOR)?.textContent ?? '',
   );
@@ -52,6 +52,7 @@ export function parseMessage(
 function parseSender(
   root: HTMLElement,
   context: ParseMessageContext,
+  allowLayoutInference: boolean,
 ): string {
   if (root.matches(OUTGOING_MESSAGE_SELECTOR)) return 'You';
 
@@ -66,18 +67,19 @@ function parseSender(
   const profileSender = parseProfileSender(profileLink);
   if (profileSender) return profileSender;
 
-  return inferSenderFromGeometry(root, context);
+  return inferSenderFromGeometry(root, context, allowLayoutInference);
 }
 
 function inferSenderFromGeometry(
   root: HTMLElement,
   context: ParseMessageContext,
+  allowLayoutInference: boolean,
 ): string {
   const { scroller } = context;
   if (!scroller) return 'Unknown';
 
   const contentRoot = findLeafTextNodes(root).at(-1) ?? findMedia(root) ?? root;
-  if (hasOutgoingLayout(contentRoot, root)) return 'You';
+  if (allowLayoutInference && hasOutgoingLayout(contentRoot, root)) return 'You';
 
   const rootRect = contentRoot.getBoundingClientRect();
   const scrollerRect = scroller.getBoundingClientRect();

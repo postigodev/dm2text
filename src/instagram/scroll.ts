@@ -5,6 +5,7 @@ import { parseMountedWindow } from './parse-window';
 import { queryMessageRoots } from './selectors';
 
 const MUTATION_TIMEOUT_MS = 750;
+const WINDOW_SETTLE_MS = 50;
 const RESTORE_ATTEMPTS = 8;
 const SCROLL_FRACTION = 0.8;
 
@@ -168,12 +169,18 @@ function createMutationWait(
 
   const promise = new Promise<'mutated' | 'timed-out'>((resolve, reject) => {
     let settled = false;
+    let settleTimeout: number | null = null;
     const observer = new MutationObserver(() => {
       const currentRoots = queryMessageRoots(target);
       const rootsChanged =
         currentRoots.length !== initialRoots.length ||
         currentRoots.some((root, index) => root !== initialRoots[index]);
-      if (rootsChanged) finish('mutated');
+      if (!rootsChanged) return;
+      if (settleTimeout !== null) window.clearTimeout(settleTimeout);
+      settleTimeout = window.setTimeout(
+        () => finish('mutated'),
+        WINDOW_SETTLE_MS,
+      );
     });
     const timeout = window.setTimeout(
       () => finish('timed-out'),
@@ -188,6 +195,7 @@ function createMutationWait(
     const cleanup = (): void => {
       observer.disconnect();
       window.clearTimeout(timeout);
+      if (settleTimeout !== null) window.clearTimeout(settleTimeout);
       signal.removeEventListener('abort', onAbort);
     };
     const finish = (result: 'mutated' | 'timed-out'): void => {

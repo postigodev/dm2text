@@ -12,7 +12,10 @@ export function parseMountedWindow(
 ): ParsedWindow {
   const messages: ParsedWindow['messages'] = [];
   let activeDate: string | undefined;
-  let unresolvedIncomingIndexes: number[] = [];
+  let unresolvedSenders: Array<{
+    index: number;
+    mayBeOutgoing: boolean;
+  }> = [];
   let anchorIndex: number | undefined;
   const semanticItems = scroller.querySelectorAll<HTMLElement>(
     `${DATE_SEPARATOR_SELECTOR}, ${MESSAGE_ROOT_SELECTOR}`,
@@ -37,17 +40,27 @@ export function parseMountedWindow(
     if (!parsed) continue;
 
     if (parsed.sender === 'You') {
-      unresolvedIncomingIndexes = [];
+      for (const unresolved of unresolvedSenders) {
+        if (!unresolved.mayBeOutgoing) continue;
+        const message = messages[unresolved.index];
+        if (message) messages[unresolved.index] = { ...message, sender: 'You' };
+      }
+      unresolvedSenders = [];
     } else if (parsed.sender === 'Unknown') {
-      unresolvedIncomingIndexes.push(messages.length);
+      unresolvedSenders.push({
+        index: messages.length,
+        mayBeOutgoing: !item.matches(
+          '[role="row"][aria-label="Message"]',
+        ),
+      });
     } else {
-      for (const index of unresolvedIncomingIndexes) {
+      for (const { index } of unresolvedSenders) {
         const unresolved = messages[index];
         if (unresolved) {
           messages[index] = { ...unresolved, sender: parsed.sender };
         }
       }
-      unresolvedIncomingIndexes = [];
+      unresolvedSenders = [];
     }
 
     if (item === anchorRoot) anchorIndex = messages.length;

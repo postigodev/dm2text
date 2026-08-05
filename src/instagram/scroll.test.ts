@@ -89,6 +89,10 @@ describe('createInstagramCollectionPort', () => {
 
     wrapper.insertAdjacentHTML('afterbegin', messageMarkup('older'));
 
+    await vi.advanceTimersByTimeAsync(49);
+    expect(settled).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
+
     await expect(resultPromise).resolves.toBe('mutated');
   });
 
@@ -152,9 +156,13 @@ describe('createInstagramCollectionPort', () => {
       startingScrollTop: -120,
     });
 
-    await expect(
-      port.restoreAnchor(snapshot, new AbortController().signal),
-    ).resolves.toBe(true);
+    const restoration = port.restoreAnchor(
+      snapshot,
+      new AbortController().signal,
+    );
+    await vi.advanceTimersByTimeAsync(50);
+
+    await expect(restoration).resolves.toBe(true);
     expect(scrollTop).toBeGreaterThan(-1_000);
     expect(HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({
       block: 'center',

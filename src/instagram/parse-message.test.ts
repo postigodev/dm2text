@@ -189,7 +189,9 @@ describe('Instagram DOM adapter', () => {
           <div role="group">
             <div style="display:flex;align-items:flex-end;justify-content:flex-start">
               <div style="display:flex;align-items:flex-end;justify-content:flex-end">
-                <img alt="image" />
+                <div style="display:flex;align-items:center;flex-direction:row-reverse;justify-content:flex-start">
+                  <img alt="image" />
+                </div>
               </div>
             </div>
           </div>
@@ -202,6 +204,38 @@ describe('Instagram DOM adapter', () => {
         scroller: requiredElement('#scroller'),
       })?.sender,
     ).toBe('Unknown');
+  });
+
+  it('backfills an ambiguous structural media card from a following outgoing message', () => {
+    document.body.innerHTML = `
+      <div id="scroller"><div>
+        <div>
+          <div role="group">
+            <div style="display:flex;align-items:flex-end;justify-content:flex-end">
+              <div style="display:flex;align-items:center;flex-direction:row-reverse;justify-content:flex-start">
+                <img alt="image" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div role="group">
+            <div style="display:flex;align-items:flex-end;justify-content:flex-end">
+              <div style="display:flex;align-items:center;flex-direction:row-reverse;justify-content:flex-start">
+                <div dir="auto">following-message</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div></div><div></div><div></div>
+      </div></div>
+    `;
+
+    expect(
+      parseMountedWindow(requiredElement('#scroller')).messages.map(
+        ({ sender }) => sender,
+      ),
+    ).toEqual(['You', 'You']);
   });
 });
 
