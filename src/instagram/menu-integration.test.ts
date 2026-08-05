@@ -62,6 +62,25 @@ describe('installMenuIntegration', () => {
     teardown();
   });
 
+  it('reinjects when Instagram repopulates the same dialog node', async () => {
+    const onCopyContextRequested = vi.fn();
+    const teardown = installMenuIntegration({ onCopyContextRequested });
+    const menuTrigger = requiredElement('[aria-label="More"]');
+    menuTrigger.click();
+    const dialog = mountNativeDialog();
+    await flushMutations();
+
+    requiredElement('[data-dm2text-action]').remove();
+    menuTrigger.click();
+    dialog.append(document.createElement('span'));
+    await flushMutations();
+
+    const reinjected = requiredElement('[data-dm2text-action]');
+    reinjected.click();
+    expect(onCopyContextRequested).toHaveBeenCalledTimes(1);
+    teardown();
+  });
+
   it('disconnects bounded observation after injection, timeout, and teardown', async () => {
     const disconnect = vi.spyOn(MutationObserver.prototype, 'disconnect');
     const teardown = installMenuIntegration({

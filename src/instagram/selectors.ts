@@ -8,7 +8,10 @@ export const MESSAGE_ACTIONS_SELECTOR = '[aria-label="Message actions"]';
 export const LEAF_ACTION_SELECTOR = 'button, [role="button"]';
 export const OUTGOING_MESSAGE_SELECTOR = '[aria-label="Sent by you"]';
 export const SENDER_SELECTOR = '[aria-label="Sender"]';
-export const PROFILE_LINK_SELECTOR = 'a[aria-label^="Profile of "]';
+export const PROFILE_LINK_SELECTOR = [
+  'a[aria-label^="Profile of "]',
+  'a[aria-label^="Open the profile page of "]',
+].join(', ');
 export const REPLY_SELECTOR = '[aria-label="Reply preview"]';
 export const REPLY_SENDER_SELECTOR = '[aria-label="Replied-to sender"]';
 export const TEXT_CONTENT_SELECTOR = ':scope > [dir="auto"]';
@@ -21,7 +24,35 @@ export const MEDIA_SELECTOR = [
 ].join(', ');
 
 export function queryMessageRoots(root: ParentNode): HTMLElement[] {
-  return Array.from(root.querySelectorAll<HTMLElement>(MESSAGE_ROOT_SELECTOR));
+  const semanticRoots = Array.from(
+    root.querySelectorAll<HTMLElement>(MESSAGE_ROOT_SELECTOR),
+  );
+  if (semanticRoots.length > 0) return semanticRoots;
+
+  const containers = [
+    ...(root instanceof HTMLElement ? [root] : []),
+    ...root.querySelectorAll<HTMLElement>('div'),
+  ];
+  let bestRoots: HTMLElement[] = [];
+  let bestChildCount = 0;
+
+  for (const container of containers) {
+    const children = Array.from(container.children).filter(
+      (child): child is HTMLElement => child instanceof HTMLElement,
+    );
+    if (children.length < 5) continue;
+
+    const roots = children.filter(isStructuralMessageRoot);
+    if (
+      roots.length > bestRoots.length ||
+      (roots.length === bestRoots.length && children.length > bestChildCount)
+    ) {
+      bestRoots = roots;
+      bestChildCount = children.length;
+    }
+  }
+
+  return bestRoots;
 }
 
 export function findStructuralActionBar(
@@ -50,5 +81,12 @@ function isFinalAction(bar: HTMLElement, actionButton: Element): boolean {
 function leafActions(root: HTMLElement): Element[] {
   return Array.from(root.querySelectorAll(LEAF_ACTION_SELECTOR)).filter(
     (control) => !control.querySelector(LEAF_ACTION_SELECTOR),
+  );
+}
+
+function isStructuralMessageRoot(candidate: HTMLElement): boolean {
+  return (
+    candidate.querySelector('[role="group"]') !== null &&
+    candidate.querySelector('[dir="auto"], img, video, audio') !== null
   );
 }

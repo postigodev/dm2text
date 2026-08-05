@@ -62,10 +62,10 @@ function parseSender(
   );
   if (visibleSender) return visibleSender;
 
-  const profileSender = normalizeInline(
-    root.querySelector<HTMLImageElement>(`${PROFILE_LINK_SELECTOR} img[alt]`)
-      ?.alt ?? '',
+  const profileLink = root.querySelector<HTMLAnchorElement>(
+    PROFILE_LINK_SELECTOR,
   );
+  const profileSender = parseProfileSender(profileLink);
   if (profileSender) return profileSender;
 
   return inferSenderFromGeometry(root, context.scroller);
@@ -77,7 +77,8 @@ function inferSenderFromGeometry(
 ): string {
   if (!scroller) return 'Unknown';
 
-  const rootRect = root.getBoundingClientRect();
+  const contentRoot = findLeafTextNodes(root).at(-1) ?? findMedia(root) ?? root;
+  const rootRect = contentRoot.getBoundingClientRect();
   const scrollerRect = scroller.getBoundingClientRect();
   if (rootRect.width <= 0 || scrollerRect.width <= 0) return 'Unknown';
 
@@ -87,10 +88,11 @@ function inferSenderFromGeometry(
 }
 
 function parseContent(root: HTMLElement): MessageContent | null {
-  const text = normalizeMultiline(
-    root.querySelector<HTMLElement>(TEXT_CONTENT_SELECTOR)?.textContent ?? '',
-  );
-  const media = root.querySelector<HTMLElement>(MEDIA_SELECTOR);
+  const textRoot =
+    root.querySelector<HTMLElement>(TEXT_CONTENT_SELECTOR) ??
+    findLeafTextNodes(root).at(-1);
+  const text = normalizeMultiline(textRoot?.textContent ?? '');
+  const media = findMedia(root);
   const label = media ? parseMediaLabel(media) : '';
 
   if (text && label) return { type: 'mixed', text, label };
@@ -113,11 +115,15 @@ function parseMediaLabel(media: HTMLElement): string {
 }
 
 function parseReply(root: HTMLElement): ReplyContext | undefined {
-  const replyRoot = root.querySelector<HTMLElement>(REPLY_SELECTOR);
+  const replyRoot =
+    root.querySelector<HTMLElement>(REPLY_SELECTOR) ??
+    findStructuralReply(root);
   if (!replyRoot) return undefined;
 
   const preview = normalizeMultiline(
-    replyRoot.querySelector<HTMLElement>('[dir="auto"]')?.textContent ?? '',
+    replyRoot.querySelector<HTMLElement>('[dir="auto"]')?.textContent ??
+      replyRoot.textContent ??
+      '',
   );
   if (!preview) return undefined;
 
@@ -129,6 +135,65 @@ function parseReply(root: HTMLElement): ReplyContext | undefined {
     ...(sender ? { sender } : {}),
     preview,
   };
+}
+
+function parseProfileSender(link: HTMLAnchorElement | null): string {
+  if (!link) return '';
+
+  const imageAlt = normalizeInline(
+    link.querySelector<HTMLImageElement>('img[alt]')?.alt ?? '',
+  );
+  if (imageAlt && imageAlt !== 'user-profile-picture') return imageAlt;
+
+  const label = normalizeInline(link.getAttribute('aria-label') ?? '');
+  const labelledSender = label.match(
+    /^(?:Profile of |Open the profile page of )(.+)$/u,
+  )?.[1];
+  if (labelledSender) return labelledSender;
+
+  return normalizeInline(link.getAttribute('href') ?? '')
+    .replace(/^\//u, '')
+    .replace(/\/$/u, '');
+}
+
+function findLeafTextNodes(root: HTMLElement): HTMLElement[] {
+  return Array.from(root.querySelectorAll<HTMLElement>('[dir="auto"]')).filter(
+    (candidate) => candidate.querySelector('[dir="auto"]') === null,
+  );
+}
+
+function findMedia(root: HTMLElement): HTMLElement | null {
+  const explicitMedia = root.querySelector<HTMLElement>(MEDIA_SELECTOR);
+  if (explicitMedia) return explicitMedia;
+
+  return (
+    Array.from(
+      root.querySelectorAll<HTMLElement>('img[alt], video, audio'),
+    ).find((candidate) => {
+      if (candidate.closest(PROFILE_LINK_SELECTOR)) return false;
+      if (candidate.closest('[aria-label="Message actions"]')) return false;
+      return candidate.getAttribute('alt') !== 'user-profile-picture';
+    }) ?? null
+  );
+}
+
+function findStructuralReply(root: HTMLElement): HTMLElement | null {
+  const contentRoot = findLeafTextNodes(root).at(-1);
+  if (!contentRoot) return null;
+
+  return (
+    Array.from(root.querySelectorAll<HTMLElement>('[role="button"]')).find(
+      (candidate) => {
+        if (!normalizeMultiline(candidate.textContent ?? '')) return false;
+        if (candidate.querySelector('img, video, audio')) return false;
+        if (candidate.contains(contentRoot)) return false;
+        return Boolean(
+          candidate.compareDocumentPosition(contentRoot) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+        );
+      },
+    ) ?? null
+  );
 }
 
 function normalizeInline(value: string): string {

@@ -68,11 +68,17 @@ export function installMenuIntegration({
     );
 
     observer = new MutationObserver(() => {
-      const newDialogs = Array.from(
+      const dialogs = Array.from(
         document.querySelectorAll<HTMLElement>(DIALOG_SELECTOR),
-      ).filter((dialog) => !dialogsBeforeClick.has(dialog));
+      );
+      const newDialogs = dialogs.filter(
+        (dialog) => !dialogsBeforeClick.has(dialog),
+      );
+      const reusedDialogs = dialogs
+        .filter((dialog) => dialogsBeforeClick.has(dialog))
+        .reverse();
 
-      for (const dialog of newDialogs) {
+      for (const dialog of [...newDialogs, ...reusedDialogs]) {
         const injected = injectAction(
           dialog,
           { anchorRoot, menuTrigger },

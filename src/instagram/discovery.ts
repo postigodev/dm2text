@@ -1,6 +1,7 @@
 import {
   MESSAGE_ROOT_SELECTOR,
   findStructuralActionBar,
+  queryMessageRoots,
 } from './selectors';
 
 export function findMessageScroller(root: ParentNode): HTMLElement | null {
@@ -21,5 +22,14 @@ export function findMessageScroller(root: ParentNode): HTMLElement | null {
 
 export function findMessageRoot(actionButton: Element): HTMLElement | null {
   const actionBar = findStructuralActionBar(actionButton);
-  return actionBar?.closest<HTMLElement>(MESSAGE_ROOT_SELECTOR) ?? null;
+  const semanticRoot = actionBar?.closest<HTMLElement>(MESSAGE_ROOT_SELECTOR);
+  if (semanticRoot) return semanticRoot;
+  if (!actionBar) return null;
+
+  const scroller = findMessageScroller(document);
+  return (
+    queryMessageRoots(scroller ?? document).find((root) =>
+      root.contains(actionBar),
+    ) ?? null
+  );
 }

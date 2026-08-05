@@ -3,6 +3,7 @@ import { parseMessage } from './parse-message';
 import {
   DATE_SEPARATOR_SELECTOR,
   MESSAGE_ROOT_SELECTOR,
+  queryMessageRoots,
 } from './selectors';
 
 export function parseMountedWindow(
@@ -12,9 +13,13 @@ export function parseMountedWindow(
   const messages: ParsedWindow['messages'] = [];
   let activeDate: string | undefined;
   let anchorIndex: number | undefined;
-  const mountedItems = scroller.querySelectorAll<HTMLElement>(
+  const semanticItems = scroller.querySelectorAll<HTMLElement>(
     `${DATE_SEPARATOR_SELECTOR}, ${MESSAGE_ROOT_SELECTOR}`,
   );
+  const mountedItems =
+    semanticItems.length > 0
+      ? Array.from(semanticItems)
+      : queryMessageRoots(scroller);
 
   for (const item of mountedItems) {
     if (item.matches(DATE_SEPARATOR_SELECTOR)) {
