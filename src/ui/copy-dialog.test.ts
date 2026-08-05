@@ -15,7 +15,7 @@ describe('createCopySessionDialog', () => {
     dialog.updateProgress(12, 50);
 
     expect(requiredHost()).toBe(host);
-    expect(shadowText()).toContain('Collecting 12 of 50…');
+    expect(shadowText()).toContain('12 of 50 messages');
     expect(dialog.signal.aborted).toBe(false);
 
     const partialConfirmation = dialog.confirmPartial(23, 50, 'stalled');
@@ -128,6 +128,90 @@ describe('createCopySessionDialog', () => {
       'keydown',
       expect.any(Function),
     );
+  });
+
+  it('renders a labelled count state inside the owned scrim', () => {
+    const dialog = createCopySessionDialog();
+    void dialog.requestCount();
+
+    expect(shadowRoot().querySelector('[data-dm2text-scrim]')).not.toBeNull();
+    expect(
+      shadowRoot().querySelector('[data-dm2text-state="count"]'),
+    ).not.toBeNull();
+    expect(shadowRoot().querySelector('h2')?.textContent).toBe('Copy context');
+    expect(shadowText()).toContain('Ends at the selected message');
+    expect(shadowRoot().querySelector('label')?.textContent).toContain(
+      'Messages to include',
+    );
+    expect(shadowRoot().activeElement).toBe(
+      shadowRoot().querySelector<HTMLInputElement>('input'),
+    );
+    expect(
+      shadowRoot().querySelector('[data-variant="primary"]')?.textContent,
+    ).toBe('Copy');
+
+    dialog.close();
+  });
+
+  it('exposes clamped determinate progress without changing the reported count', () => {
+    const dialog = createCopySessionDialog();
+
+    dialog.updateProgress(75, 50);
+
+    const progress = shadowRoot().querySelector<HTMLProgressElement>(
+      '[data-dm2text-progress]',
+    );
+    expect(progress?.max).toBe(50);
+    expect(progress?.value).toBe(50);
+    expect(progress?.getAttribute('aria-label')).toBe(
+      'Collected 75 of 50 messages',
+    );
+    expect(
+      shadowRoot().querySelector('[data-dm2text-state="progress"]'),
+    ).not.toBeNull();
+    expect(shadowText()).toContain('75 of 50 messages');
+
+    dialog.close();
+  });
+
+  it('keeps achieved progress visible during partial confirmation', async () => {
+    const dialog = createCopySessionDialog();
+    const confirmation = dialog.confirmPartial(23, 50, 'stalled');
+
+    const progress = shadowRoot().querySelector<HTMLProgressElement>(
+      '[data-dm2text-progress]',
+    );
+    expect(
+      shadowRoot().querySelector('[data-dm2text-state="partial"]'),
+    ).not.toBeNull();
+    expect(progress?.value).toBe(23);
+    expect(progress?.max).toBe(50);
+    expect(
+      shadowRoot().querySelector('[data-variant="primary"]')?.textContent,
+    ).toBe('Copy 23');
+
+    clickButton('Cancel');
+    await expect(confirmation).resolves.toBe(false);
+    dialog.close();
+  });
+
+  it('keeps validation polite and structurally stable', async () => {
+    const dialog = createCopySessionDialog();
+    const countPromise = dialog.requestCount();
+
+    setCountValue('0');
+    clickButton('Copy');
+
+    const error = shadowRoot().querySelector('[data-dm2text-error]');
+    expect(error?.getAttribute('aria-live')).toBe('polite');
+    expect(error?.textContent).toBe('Enter a whole number from 1 to 999.');
+    expect(
+      shadowRoot().querySelector('[data-dm2text-state="count"]'),
+    ).not.toBeNull();
+
+    clickButton('Cancel');
+    await expect(countPromise).resolves.toBeNull();
+    dialog.close();
   });
 });
 

@@ -17,11 +17,14 @@ export function createCopySessionDialog(): CopySessionDialog {
   const shadow = host.attachShadow({ mode: 'open' });
   const style = document.createElement('style');
   style.textContent = DIALOG_STYLES;
+  const scrim = document.createElement('div');
+  scrim.setAttribute('data-dm2text-scrim', '');
   const panel = document.createElement('section');
   panel.setAttribute('role', 'dialog');
   panel.setAttribute('aria-modal', 'true');
-  panel.setAttribute('aria-label', 'Copy context');
-  shadow.append(style, panel);
+  panel.setAttribute('aria-labelledby', 'dm2text-dialog-title');
+  scrim.append(panel);
+  shadow.append(style, scrim);
   document.body.append(host);
 
   let closed = false;
@@ -112,11 +115,10 @@ function renderCountForm(
   finish: (count: number | null) => void,
   cancel: () => void,
 ): void {
-  const title = heading();
   const form = document.createElement('form');
   form.noValidate = true;
   const label = document.createElement('label');
-  label.textContent = 'How many messages?';
+  label.textContent = 'Messages to include';
   const input = document.createElement('input');
   input.type = 'number';
   input.min = '1';
@@ -127,8 +129,8 @@ function renderCountForm(
   error.setAttribute('data-dm2text-error', '');
   error.setAttribute('aria-live', 'polite');
   const actions = actionRow(
-    button('Copy', 'submit'),
     cancelButton(cancel),
+    button('Copy', 'submit', 'primary'),
   );
 
   label.append(input);
@@ -144,7 +146,7 @@ function renderCountForm(
     error.textContent = '';
     finish(count);
   });
-  panel.replaceChildren(title, form);
+  renderState(panel, 'count', contextProgress(0, 1, true), form);
   input.focus();
 }
 
@@ -154,10 +156,13 @@ function renderProgress(
   requested: number,
   cancel: () => void,
 ): void {
-  const status = document.createElement('p');
-  status.setAttribute('role', 'status');
-  status.textContent = `Collecting ${collected} of ${requested}…`;
-  panel.replaceChildren(heading(), status, actionRow(cancelButton(cancel)));
+  renderState(
+    panel,
+    'progress',
+    contextProgress(collected, requested),
+    progressCopy(collected, requested),
+    actionRow(cancelButton(cancel)),
+  );
 }
 
 function renderPartialConfirmation(
@@ -168,22 +173,87 @@ function renderPartialConfirmation(
   cancel: () => void,
 ): void {
   const message = document.createElement('p');
+  message.className = 'partial-copy';
   message.textContent =
     `Found only ${available} of ${requested} messages. ` +
     'Copy the available messages?';
-  const copyAvailable = button(`Copy ${available}`, 'button');
+  const copyAvailable = button(`Copy ${available}`, 'button', 'primary');
   copyAvailable.addEventListener('click', () => finish(true));
-  panel.replaceChildren(
-    heading(),
+  renderState(
+    panel,
+    'partial',
+    contextProgress(available, requested),
     message,
-    actionRow(copyAvailable, cancelButton(cancel)),
+    actionRow(cancelButton(cancel), copyAvailable),
   );
 }
 
-function heading(): HTMLHeadingElement {
+type DialogState = 'count' | 'progress' | 'partial';
+
+function renderState(
+  panel: HTMLElement,
+  state: DialogState,
+  ...content: Node[]
+): void {
+  panel.setAttribute('data-dm2text-state', state);
+  panel.replaceChildren(dialogHeader(), ...content);
+}
+
+function dialogHeader(): HTMLElement {
+  const header = document.createElement('header');
+  const copy = document.createElement('div');
   const title = document.createElement('h2');
+  title.id = 'dm2text-dialog-title';
   title.textContent = 'Copy context';
-  return title;
+  const subtitle = document.createElement('p');
+  subtitle.className = 'subtitle';
+  subtitle.textContent = 'Ends at the selected message';
+  const anchor = document.createElement('span');
+  anchor.className = 'anchor-glyph';
+  anchor.setAttribute('aria-hidden', 'true');
+  anchor.textContent = '⌁';
+  copy.append(title, subtitle);
+  header.append(copy, anchor);
+  return header;
+}
+
+function contextProgress(
+  current: number,
+  requested: number,
+  decorative = false,
+): HTMLElement {
+  const safeMaximum = Math.max(1, requested);
+  const clamped = Math.min(Math.max(0, current), safeMaximum);
+  const wrapper = document.createElement('div');
+  wrapper.className = 'context-progress';
+  const history = document.createElement('span');
+  history.className = 'context-endpoint history-endpoint';
+  history.setAttribute('aria-hidden', 'true');
+  const progress = document.createElement('progress');
+  progress.setAttribute('data-dm2text-progress', '');
+  if (decorative) {
+    progress.setAttribute('aria-hidden', 'true');
+  } else {
+    progress.setAttribute(
+      'aria-label',
+      `Collected ${current} of ${requested} messages`,
+    );
+  }
+  progress.max = safeMaximum;
+  progress.value = clamped;
+  const anchor = document.createElement('span');
+  anchor.className = 'context-endpoint anchor-endpoint';
+  anchor.setAttribute('aria-hidden', 'true');
+  wrapper.append(history, progress, anchor);
+  return wrapper;
+}
+
+function progressCopy(current: number, requested: number): HTMLElement {
+  const status = document.createElement('p');
+  status.className = 'progress-copy';
+  status.setAttribute('role', 'status');
+  status.textContent = `${current} of ${requested} messages`;
+  return status;
 }
 
 function cancelButton(cancel: () => void): HTMLButtonElement {
@@ -202,9 +272,11 @@ function actionRow(...buttons: HTMLButtonElement[]): HTMLElement {
 function button(
   text: string,
   type: 'button' | 'submit',
+  variant: 'primary' | 'secondary' = 'secondary',
 ): HTMLButtonElement {
   const element = document.createElement('button');
   element.type = type;
+  element.setAttribute('data-variant', variant);
   element.textContent = text;
   return element;
 }
@@ -219,28 +291,204 @@ function parseCount(value: string): number | null {
 
 const DIALOG_STYLES = `
   :host {
-    color: #f5f5f5;
-    font-family: system-ui, sans-serif;
+    --dm-scrim: rgb(0 0 0 / 18%);
+    --dm-panel: #ffffff;
+    --dm-control: #f2f3f5;
+    --dm-text: #101114;
+    --dm-text-secondary: #5f636d;
+    --dm-text-muted: #858a94;
+    --dm-border: rgb(16 17 20 / 12%);
+    --dm-border-emphasis: rgb(16 17 20 / 22%);
+    --dm-action: #0095f6;
+    --dm-action-active: #1877f2;
+    --dm-error: #c6283c;
+    color: var(--dm-text);
+    font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :host {
+      --dm-scrim: rgb(0 0 0 / 42%);
+      --dm-panel: #191b20;
+      --dm-control: #101217;
+      --dm-text: #f5f5f7;
+      --dm-text-secondary: #c7c9cf;
+      --dm-text-muted: #989ca6;
+      --dm-border: rgb(255 255 255 / 11%);
+      --dm-border-emphasis: rgb(255 255 255 / 20%);
+      --dm-error: #ff7b8b;
+    }
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  [data-dm2text-scrim] {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: var(--dm-scrim);
   }
 
   section {
-    position: fixed;
-    inset: 50% auto auto 50%;
-    z-index: 2147483647;
-    width: min(360px, calc(100vw - 32px));
+    width: min(360px, 100%);
     padding: 20px;
-    border: 1px solid #363636;
-    border-radius: 12px;
-    background: #181818;
-    box-shadow: 0 16px 48px rgb(0 0 0 / 45%);
-    transform: translate(-50%, -50%);
+    border: 1px solid var(--dm-border);
+    border-radius: 16px;
+    color: var(--dm-text);
+    background: var(--dm-panel);
+    box-shadow: 0 18px 48px rgb(0 0 0 / 28%);
+    animation: dm-panel-in 140ms cubic-bezier(.2, .8, .2, 1);
   }
 
-  h2, p { margin: 0 0 16px; }
-  label { display: grid; gap: 8px; }
+  header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+  }
+
+  p { margin: 0; }
+
+  .subtitle {
+    margin-top: 2px;
+    color: var(--dm-text-muted);
+    font-size: 12px;
+  }
+
+  .anchor-glyph {
+    display: grid;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    flex: 0 0 auto;
+    border: 1px solid var(--dm-border);
+    border-radius: 50%;
+    color: var(--dm-text-muted);
+  }
+
+  .context-progress {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 18px 0 16px;
+  }
+
+  .context-endpoint {
+    width: 6px;
+    height: 6px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--dm-border-emphasis);
+  }
+
+  .anchor-endpoint { background: var(--dm-action); }
+
+  progress {
+    width: 100%;
+    height: 2px;
+    overflow: hidden;
+    border: 0;
+    border-radius: 999px;
+    background: var(--dm-border);
+  }
+
+  progress::-webkit-progress-bar { background: var(--dm-border); }
+  progress::-webkit-progress-value { background: var(--dm-action); }
+  progress::-moz-progress-bar { background: var(--dm-action); }
+
+  form, label { display: grid; }
+
+  label {
+    gap: 7px;
+    color: var(--dm-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
   input, button { font: inherit; }
-  input { padding: 8px; }
-  [data-dm2text-error] { min-height: 1.5em; color: #ff8a8a; }
-  .actions { display: flex; justify-content: flex-end; gap: 8px; }
-  button { padding: 8px 12px; cursor: pointer; }
+
+  input {
+    width: 100%;
+    height: 40px;
+    padding: 0 11px;
+    border: 1px solid var(--dm-border);
+    border-radius: 9px;
+    outline: 0;
+    color: var(--dm-text);
+    background: var(--dm-control);
+    font-variant-numeric: tabular-nums;
+  }
+
+  input:hover { border-color: var(--dm-border-emphasis); }
+
+  input:focus-visible {
+    border-color: var(--dm-action);
+    box-shadow: 0 0 0 3px rgb(0 149 246 / 20%);
+  }
+
+  [data-dm2text-error] {
+    min-height: 18px;
+    margin-top: 5px;
+    color: var(--dm-error);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .progress-copy, .partial-copy { color: var(--dm-text-secondary); }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  button {
+    min-height: 36px;
+    padding: 8px 13px;
+    border: 0;
+    border-radius: 9px;
+    cursor: pointer;
+    color: var(--dm-text-secondary);
+    background: transparent;
+    font-weight: 650;
+  }
+
+  button:hover { background: var(--dm-control); }
+  button:active { transform: translateY(1px); }
+
+  button:focus-visible {
+    outline: 3px solid rgb(0 149 246 / 28%);
+    outline-offset: 2px;
+  }
+
+  button[data-variant="primary"] {
+    color: #fff;
+    background: var(--dm-action);
+  }
+
+  button[data-variant="primary"]:hover { background: var(--dm-action-active); }
+  button:disabled { cursor: default; opacity: .5; }
+
+  @keyframes dm-panel-in {
+    from { opacity: 0; transform: translateY(5px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    section { animation: none; }
+    button:active { transform: none; }
+  }
 `;
