@@ -47,7 +47,7 @@ export function createInstagramCollectionPort({
       try {
         signal.throwIfAborted();
         activeScroller.scrollBy({
-          top: -(SCROLL_FRACTION * activeScroller.clientHeight),
+          top: getOlderScrollDistance(activeScroller),
           behavior: 'instant',
         });
         signal.throwIfAborted();
@@ -114,6 +114,19 @@ export function createInstagramCollectionPort({
       return false;
     },
   };
+}
+
+function getOlderScrollDistance(scroller: HTMLElement): number {
+  const viewportStep = -(SCROLL_FRACTION * scroller.clientHeight);
+  const oldestMountedRoot = queryMessageRoots(scroller)[0];
+  if (!oldestMountedRoot) return viewportStep;
+
+  const distanceToOldest =
+    oldestMountedRoot.getBoundingClientRect().top -
+    scroller.getBoundingClientRect().top;
+  if (!Number.isFinite(distanceToOldest)) return viewportStep;
+
+  return Math.min(viewportStep, distanceToOldest);
 }
 
 function findSnapshotRoot(

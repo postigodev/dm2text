@@ -39,6 +39,35 @@ describe('createInstagramCollectionPort', () => {
     await expect(resultPromise).resolves.toBe('timed-out');
   });
 
+  it('reaches the oldest mounted root in one collection step', async () => {
+    const { activeScroller, anchorRoot } = mountScrollFixture();
+    const oldestRoot = requiredElement('[data-signature="before"]');
+    Object.defineProperty(oldestRoot, 'getBoundingClientRect', {
+      configurable: true,
+      value: () => rect(-1_200, 100),
+    });
+    Object.defineProperty(activeScroller, 'getBoundingClientRect', {
+      configurable: true,
+      value: () => rect(0, 500),
+    });
+    const scrollBy = vi.fn();
+    activeScroller.scrollBy = scrollBy;
+    const port = createInstagramCollectionPort({
+      scroller: activeScroller,
+      anchorRoot,
+      startingScrollTop: 0,
+    });
+
+    const resultPromise = port.scrollOlder(new AbortController().signal);
+    expect(scrollBy).toHaveBeenCalledWith({
+      top: -1_200,
+      behavior: 'instant',
+    });
+    await vi.advanceTimersByTimeAsync(750);
+
+    await expect(resultPromise).resolves.toBe('timed-out');
+  });
+
   it('ignores unrelated mutations and resolves after message roots change', async () => {
     const { activeScroller, wrapper, anchorRoot } = mountScrollFixture();
     activeScroller.scrollBy = vi.fn();
@@ -232,4 +261,18 @@ function defineMetric(element: HTMLElement, name: string, value: number): void {
     writable: true,
     value,
   });
+}
+
+function rect(top: number, height: number): DOMRect {
+  return {
+    x: 0,
+    y: top,
+    left: 0,
+    right: 100,
+    top,
+    bottom: top + height,
+    width: 100,
+    height,
+    toJSON: () => ({}),
+  };
 }

@@ -77,6 +77,8 @@ function inferSenderFromGeometry(
   if (!scroller) return 'Unknown';
 
   const contentRoot = findLeafTextNodes(root).at(-1) ?? findMedia(root) ?? root;
+  if (hasOutgoingLayout(contentRoot, root)) return 'You';
+
   const rootRect = contentRoot.getBoundingClientRect();
   const scrollerRect = scroller.getBoundingClientRect();
   if (rootRect.width <= 0 || scrollerRect.width <= 0) return 'Unknown';
@@ -85,6 +87,28 @@ function inferSenderFromGeometry(
   const scrollerCenter = scrollerRect.left + scrollerRect.width / 2;
   if (rootCenter > scrollerCenter) return 'You';
   return 'Unknown';
+}
+
+function hasOutgoingLayout(
+  contentRoot: HTMLElement,
+  messageRoot: HTMLElement,
+): boolean {
+  let candidate: HTMLElement | null = contentRoot;
+
+  while (candidate && messageRoot.contains(candidate)) {
+    const style = getComputedStyle(candidate);
+    if (
+      style.display === 'flex' &&
+      style.alignItems === 'flex-end' &&
+      style.justifyContent === 'flex-end'
+    ) {
+      return true;
+    }
+    if (candidate === messageRoot) break;
+    candidate = candidate.parentElement;
+  }
+
+  return false;
 }
 
 function parseContent(root: HTMLElement): MessageContent | null {

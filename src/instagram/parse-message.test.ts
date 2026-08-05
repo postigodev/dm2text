@@ -159,6 +159,26 @@ describe('Instagram DOM adapter', () => {
       ),
     ).toEqual(['Unknown', 'You', 'Person A']);
   });
+
+  it('detects an offscreen outgoing message from stable flex alignment', () => {
+    document.body.innerHTML = `
+      <div id="scroller">
+        <div id="outgoing">
+          <div role="group">
+            <div style="display:flex;align-items:flex-end;justify-content:flex-end">
+              <div dir="auto">offscreen-message</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    expect(
+      parseMessage(requiredElement('#outgoing'), {
+        scroller: requiredElement('#scroller'),
+      })?.sender,
+    ).toBe('You');
+  });
 });
 
 function loadFixture(name: 'group' | 'individual'): void {
