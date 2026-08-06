@@ -26,8 +26,11 @@
   "scripts": {
     "dev": "wxt",
     "build": "wxt build",
+    "check:budget:js": "node scripts/check-budgets.mjs --scope=js",
+    "check:budgets": "node scripts/check-budgets.mjs",
     "zip": "wxt zip",
     "test": "vitest run",
+    "test:budgets": "node --test scripts/check-budgets.test.mjs",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "postinstall": "wxt prepare"
