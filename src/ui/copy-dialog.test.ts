@@ -153,16 +153,18 @@ describe('createCopySessionDialog', () => {
     dialog.close();
   });
 
-  it('passes the Instagram page font into the isolated dialog styles', () => {
+  it('applies the Instagram page font after the host style reset', () => {
     vi.spyOn(window, 'getComputedStyle').mockReturnValue({
       fontFamily: 'Instagram Sans, sans-serif',
     } as CSSStyleDeclaration);
 
     const dialog = createCopySessionDialog();
 
-    expect(requiredHost().style.getPropertyValue('--dm-page-font')).toBe(
-      'Instagram Sans, sans-serif',
+    expect(requiredHost().style.fontFamily).toBe(
+      '"Instagram Sans", sans-serif',
     );
+    expect(requiredHost().style.fontSize).toBe('14px');
+    expect(requiredHost().style.lineHeight).toBe('1.4');
     dialog.close();
   });
 

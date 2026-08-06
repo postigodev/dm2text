@@ -38,7 +38,7 @@ describe('showToast', () => {
     expect(document.querySelector('.dm2text-root')).toBeNull();
   });
 
-  it('passes the Instagram page font into the isolated toast styles', () => {
+  it('applies the Instagram page font after the host style reset', () => {
     vi.spyOn(window, 'getComputedStyle').mockReturnValue({
       fontFamily: 'Instagram Sans, sans-serif',
     } as CSSStyleDeclaration);
@@ -46,9 +46,9 @@ describe('showToast', () => {
     showToast('Copied 50 messages.', 'success');
 
     const host = document.querySelector<HTMLElement>('.dm2text-root');
-    expect(host?.style.getPropertyValue('--dm-page-font')).toBe(
-      'Instagram Sans, sans-serif',
-    );
+    expect(host?.style.fontFamily).toBe('"Instagram Sans", sans-serif');
+    expect(host?.style.fontSize).toBe('14px');
+    expect(host?.style.lineHeight).toBe('1.4');
   });
 
   it('removes the owned host after four seconds', () => {

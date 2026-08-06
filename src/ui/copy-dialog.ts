@@ -15,7 +15,10 @@ export function createCopySessionDialog(): CopySessionDialog {
   const host = document.createElement('div');
   host.className = 'dm2text-root';
   const pageFont = getComputedStyle(document.body).fontFamily.trim();
-  if (pageFont) host.style.setProperty('--dm-page-font', pageFont);
+  host.style.fontFamily =
+    pageFont || '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+  host.style.fontSize = '14px';
+  host.style.lineHeight = '1.4';
   const shadow = host.attachShadow({ mode: 'open' });
   const style = document.createElement('style');
   style.textContent = DIALOG_STYLES;
@@ -305,10 +308,6 @@ const DIALOG_STYLES = `
     --dm-action-active: #1877f2;
     --dm-error: #c6283c;
     color: var(--dm-text);
-    font: 14px/1.4 var(
-      --dm-page-font,
-      -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
-    );
   }
 
   @media (prefers-color-scheme: dark) {
