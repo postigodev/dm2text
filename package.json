@@ -2,6 +2,26 @@
   "name": "dm2text",
   "version": "0.1.0",
   "private": true,
+  "license": "GPL-3.0-only",
+  "author": "Piero A. Postigo Rocchetti",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/postigodev/dm2text.git"
+  },
+  "bugs": {
+    "url": "https://github.com/postigodev/dm2text/issues"
+  },
+  "homepage": "https://github.com/postigodev/dm2text#readme",
+  "keywords": [
+    "browser-extension",
+    "chrome-extension",
+    "instagram-direct",
+    "local-first",
+    "manifest-v3",
+    "typescript",
+    "wxt"
+  ],
+  "packageManager": "pnpm@10.26.2",
   "type": "module",
   "scripts": {
     "dev": "wxt",
