@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions: {}
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.2
+          run_install: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - name: Validate tag and package version
+        shell: bash
+        run: |
+          expected="v$(node -p "require('./package.json').version")"
+          if [[ "$GITHUB_REF_NAME" != "$expected" ]]; then
+            echo "Tag $GITHUB_REF_NAME does not match package version $expected." >&2
+            exit 1
+          fi
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm test:budgets
+      - run: pnpm typecheck
+      - run: pnpm build
+      - run: pnpm check:budget:js
+      - run: pnpm zip
+      - run: pnpm check:budgets
+      - name: Publish release asset safely
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          asset=".output/dm2text-${version}-chrome.zip"
+          asset_name="$(basename "$asset")"
+          label="DM2Text ${GITHUB_REF_NAME} for Chrome"
+          local_digest="sha256:$(sha256sum "$asset" | cut -d ' ' -f1)"
+
+          if ! gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release create "$GITHUB_REF_NAME" "$asset#$label" \
+              --target "$GITHUB_SHA" \
+              --title "DM2Text $GITHUB_REF_NAME" \
+              --generate-notes \
+              --latest
+            exit 0
+          fi
+
+          target="$(gh release view "$GITHUB_REF_NAME" --json targetCommitish --jq .targetCommitish)"
+          if [[ "$target" != "$GITHUB_SHA" ]]; then
+            echo "Existing release targets $target instead of $GITHUB_SHA." >&2
+            exit 1
+          fi
+
+          remote_digest="$(gh release view "$GITHUB_REF_NAME" --json assets --jq ".assets[] | select(.name == \"$asset_name\") | .digest")"
+          if [[ -z "$remote_digest" ]]; then
+            gh release upload "$GITHUB_REF_NAME" "$asset#$label"
+          elif [[ "$remote_digest" == "$local_digest" ]]; then
+            echo "Release asset already exists with matching digest."
+          else
+            echo "Release asset digest conflict: remote=$remote_digest local=$local_digest" >&2
+            exit 1
+          fi
