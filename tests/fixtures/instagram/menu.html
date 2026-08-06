@@ -21,8 +21,18 @@
 <template id="native-menu-template">
   <div role="dialog">
     <div>
-      <button type="button">Native action one</button>
-      <button type="button">Native action two</button>
+      <button type="button" class="native-menu-row">
+        <span data-native-label>Native action one</span>
+        <span data-native-icon-slot>
+          <svg data-native-icon viewBox="0 0 24 24"><path d="M1 1h2" /></svg>
+        </span>
+      </button>
+      <button type="button" class="native-menu-row">
+        <span data-native-label>Native action two</span>
+        <span data-native-icon-slot>
+          <svg data-native-icon viewBox="0 0 24 24"><path d="M2 2h2" /></svg>
+        </span>
+      </button>
     </div>
   </div>
 </template>

@@ -62,6 +62,33 @@ describe('installMenuIntegration', () => {
     teardown();
   });
 
+  it('preserves the native row layout while replacing its label and icon', async () => {
+    const teardown = installMenuIntegration({
+      onCopyContextRequested: vi.fn(),
+    });
+    requiredElement('[aria-label="More"]').click();
+    const dialog = mountNativeDialog();
+    await flushMutations();
+
+    const nativeAction = dialog.querySelector<HTMLElement>(
+      'button:not([data-dm2text-action])',
+    );
+    const customAction = requiredElement('[data-dm2text-action]');
+    const icon = customAction.querySelector<SVGSVGElement>(
+      '[data-dm2text-icon]',
+    );
+
+    expect(customAction.className).toBe(nativeAction?.className);
+    expect(customAction.querySelector('[data-native-label]')?.textContent).toBe(
+      'Copy context',
+    );
+    expect(customAction.querySelector('[data-native-icon-slot]')).not.toBeNull();
+    expect(icon?.getAttribute('aria-hidden')).toBe('true');
+    expect(icon?.getAttribute('viewBox')).toBe('0 0 24 24');
+    expect(icon?.querySelectorAll('path, rect')).toHaveLength(2);
+    teardown();
+  });
+
   it('reinjects when Instagram repopulates the same dialog node', async () => {
     const onCopyContextRequested = vi.fn();
     const teardown = installMenuIntegration({ onCopyContextRequested });

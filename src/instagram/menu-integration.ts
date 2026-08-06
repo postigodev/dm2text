@@ -4,6 +4,7 @@ const CUSTOM_ACTION_ATTRIBUTE = 'data-dm2text-action';
 const DIALOG_SELECTOR = '[role="dialog"]';
 const MENU_CONTROL_SELECTOR = 'button, [role="button"]';
 const OBSERVER_TIMEOUT_MS = 2_000;
+const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
 export interface CopyContextRequest {
   anchorRoot: HTMLElement;
@@ -134,7 +135,7 @@ function injectAction(
   if (!(customAction instanceof HTMLElement)) return false;
 
   customAction.setAttribute(CUSTOM_ACTION_ATTRIBUTE, '');
-  customAction.textContent = 'Copy context';
+  if (!decorateCustomAction(customAction)) return false;
   let emitted = false;
   customAction.addEventListener('click', () => {
     if (emitted) return;
@@ -144,4 +145,52 @@ function injectAction(
   nativeAction.parentElement.append(customAction);
   injectedActions.add(customAction);
   return true;
+}
+
+function decorateCustomAction(action: HTMLElement): boolean {
+  const labelNode = findFirstTextNode(action);
+  if (!labelNode) return false;
+
+  labelNode.textContent = 'Copy context';
+  const icon =
+    action.querySelector<SVGSVGElement>('svg') ??
+    document.createElementNS(SVG_NAMESPACE, 'svg');
+  if (!icon.parentElement) action.append(icon);
+  icon.setAttribute('data-dm2text-icon', '');
+  icon.setAttribute('aria-hidden', 'true');
+  icon.setAttribute('focusable', 'false');
+  icon.setAttribute('viewBox', '0 0 24 24');
+  icon.setAttribute('width', '20');
+  icon.setAttribute('height', '20');
+  icon.setAttribute('fill', 'none');
+  icon.setAttribute('stroke', 'currentColor');
+  icon.setAttribute('stroke-width', '1.8');
+  icon.setAttribute('stroke-linecap', 'round');
+  icon.setAttribute('stroke-linejoin', 'round');
+
+  const page = document.createElementNS(SVG_NAMESPACE, 'rect');
+  page.setAttribute('x', '8');
+  page.setAttribute('y', '7');
+  page.setAttribute('width', '10');
+  page.setAttribute('height', '12');
+  page.setAttribute('rx', '2');
+  const context = document.createElementNS(SVG_NAMESPACE, 'path');
+  context.setAttribute(
+    'd',
+    'M6 17H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1',
+  );
+  icon.replaceChildren(page, context);
+  return true;
+}
+
+function findFirstTextNode(root: HTMLElement): Text | null {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let candidate = walker.nextNode();
+
+  while (candidate) {
+    if (candidate.textContent?.trim()) return candidate as Text;
+    candidate = walker.nextNode();
+  }
+
+  return null;
 }
