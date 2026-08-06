@@ -38,6 +38,19 @@ describe('showToast', () => {
     expect(document.querySelector('.dm2text-root')).toBeNull();
   });
 
+  it('passes the Instagram page font into the isolated toast styles', () => {
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      fontFamily: 'Instagram Sans, sans-serif',
+    } as CSSStyleDeclaration);
+
+    showToast('Copied 50 messages.', 'success');
+
+    const host = document.querySelector<HTMLElement>('.dm2text-root');
+    expect(host?.style.getPropertyValue('--dm-page-font')).toBe(
+      'Instagram Sans, sans-serif',
+    );
+  });
+
   it('removes the owned host after four seconds', () => {
     vi.useFakeTimers();
     showToast('Copied 50 messages.', 'success');

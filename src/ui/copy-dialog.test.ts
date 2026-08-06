@@ -153,6 +153,19 @@ describe('createCopySessionDialog', () => {
     dialog.close();
   });
 
+  it('passes the Instagram page font into the isolated dialog styles', () => {
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      fontFamily: 'Instagram Sans, sans-serif',
+    } as CSSStyleDeclaration);
+
+    const dialog = createCopySessionDialog();
+
+    expect(requiredHost().style.getPropertyValue('--dm-page-font')).toBe(
+      'Instagram Sans, sans-serif',
+    );
+    dialog.close();
+  });
+
   it('exposes clamped determinate progress without changing the reported count', () => {
     const dialog = createCopySessionDialog();
 
