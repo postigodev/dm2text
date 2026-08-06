@@ -1,6 +1,14 @@
-# DM2Text
-
-Copy clean, structured context from Instagram Direct without sending your conversations anywhere.
+<div align="center">
+  <img src="docs/assets/dm2text-mark.svg" alt="DM2Text Context Ribbon logo" width="96" />
+  <h1>DM2Text</h1>
+  <p>Copy clean, structured context from Instagram Direct—without sending your conversations anywhere.</p>
+  <p>
+    <a href="https://github.com/postigodev/dm2text/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/postigodev/dm2text" /></a>
+    <a href="https://github.com/postigodev/dm2text/actions/workflows/ci.yml"><img alt="CI status" src="https://github.com/postigodev/dm2text/actions/workflows/ci.yml/badge.svg" /></a>
+    <a href="LICENSE"><img alt="GPL-3.0-only license" src="https://img.shields.io/github/license/postigodev/dm2text" /></a>
+    <img alt="Chrome Manifest V3" src="https://img.shields.io/badge/Chrome-Manifest_V3-4285F4?logo=googlechrome&amp;logoColor=white" />
+  </p>
+</div>
 
 DM2Text adds a native-looking **Copy context** action to each message menu. Select an end message, choose how many messages you need, and the extension collects the preceding context into a chronological transcript on your clipboard.
 
@@ -13,6 +21,21 @@ DM2Text adds a native-looking **Copy context** action to each message menu. Sele
 - Supports cancellation, partial-copy confirmation, and best-effort viewport restoration.
 - Matches Instagram's light or dark appearance with a small, native-looking interface.
 - Processes conversation content locally with no persistence or extension-originated network traffic.
+
+## See it in action
+
+One native-looking action opens one focused copy session.
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/assets/message-action.png" alt="Copy context in the Instagram message action menu" /></td>
+    <td align="center"><img src="docs/assets/copy-dialog.png" alt="DM2Text message-count dialog" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Choose Copy context on the anchor message.</sub></td>
+    <td align="center"><sub>Enter the number of messages and start the copy session.</sub></td>
+  </tr>
+</table>
 
 ## Install
 
@@ -77,6 +100,16 @@ The implementation is split by responsibility:
 - `src/collection/` owns the transient copy session.
 - `src/transcript/` selects and formats normalized messages.
 - `src/ui/` creates the session dialog and toasts only when needed.
+
+## Community
+
+Contributions are welcome. Read the [contribution guide](CONTRIBUTING.md), [code of conduct](CODE_OF_CONDUCT.md), and [security policy](SECURITY.md) before opening an issue or pull request.
+
+DM2Text is an independent project and is not affiliated with, endorsed by, or sponsored by Instagram or Meta.
+
+## License
+
+Copyright © 2026 Piero A. Postigo Rocchetti. DM2Text is licensed under [GPL-3.0-only](LICENSE).
 
 ## Limitations
 
