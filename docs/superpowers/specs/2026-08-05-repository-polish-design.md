@@ -1,7 +1,7 @@
 # DM2Text Repository Polish Design
 
-**Date:** 2026-08-05  
-**Status:** Approved for implementation planning  
+**Date:** 2026-08-05
+**Status:** Approved for implementation planning
 **Scope:** Public repository presentation, licensing, contributor experience, CI, and tag-driven releases
 
 ## Objective
