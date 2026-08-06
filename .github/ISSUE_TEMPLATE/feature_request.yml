@@ -1,0 +1,29 @@
+name: Feature request
+description: Propose a focused improvement to DM2Text.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user need is not currently met?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Proposed outcome
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: impact
+    attributes:
+      label: Privacy and performance impact
+      description: Note any DOM scanning, storage, network, permission, or bundle-size implications.
+    validations:
+      required: true

@@ -1,0 +1,55 @@
+name: Bug report
+description: Report reproducible incorrect behavior without sharing private conversation data.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include real DMs, usernames, avatars, thread IDs, cookies, credentials, or unredacted DOM. Use synthetic or fully anonymized evidence."
+  - type: input
+    id: version
+    attributes:
+      label: DM2Text version
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 140
+    validations:
+      required: true
+  - type: dropdown
+    id: conversation
+    attributes:
+      label: Conversation type
+      options: [Individual DM, Group DM, Both, Not applicable]
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Use synthetic names and messages.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I removed or anonymized all private conversation and account data.
+          required: true
