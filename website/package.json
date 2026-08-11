@@ -1,0 +1,30 @@
+{
+  "name": "dm2text-website",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.26.2",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:output": "node --test tests/site-output.test.mjs",
+    "verify": "pnpm format:check && pnpm check && pnpm build && pnpm test:output"
+  },
+  "dependencies": {
+    "@lucide/astro": "latest",
+    "astro": "latest"
+  },
+  "devDependencies": {
+    "@astrojs/check": "latest",
+    "@tailwindcss/typography": "latest",
+    "@tailwindcss/vite": "latest",
+    "prettier": "latest",
+    "prettier-plugin-astro": "latest",
+    "tailwindcss": "latest",
+    "typescript": "^6.0.0"
+  }
+}
