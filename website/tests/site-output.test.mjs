@@ -62,6 +62,19 @@ test('build includes exact local brand assets', async () => {
   await access(pageUrl('brand/icon-128.png'));
 });
 
+test('every Add to Chrome CTA uses the local Chrome logo', async () => {
+  const home = await readFile(pageUrl('index.html'), 'utf8');
+  const chromeCtas = home.match(/>Add to Chrome<\/a>/g) ?? [];
+  const chromeLogos =
+    home.match(
+      /<img src="\/brand\/google-chrome\.svg" alt="" width="18" height="18" aria-hidden="true">/g,
+    ) ?? [];
+
+  assert.equal(chromeCtas.length, 2);
+  assert.equal(chromeLogos.length, chromeCtas.length);
+  assert.doesNotMatch(home, /lucide-download/);
+});
+
 test('landing page explains the real copy workflow and output', async () => {
   const home = await readFile(pageUrl('index.html'), 'utf8');
   const text = visibleText(home);

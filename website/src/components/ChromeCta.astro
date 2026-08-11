@@ -1,6 +1,4 @@
 ---
-import { Download } from '@lucide/astro';
-
 import { CHROME_WEB_STORE_URL, IS_MANUAL_INSTALL } from '../config';
 
 interface Props {
@@ -23,7 +21,13 @@ const disclosure = compact
     class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-accent-rose to-accent-violet px-5 py-3 text-sm font-bold text-white shadow-[0_12px_28px_rgba(116,84,218,0.28)] transition-transform hover:-translate-y-0.5"
     href={CHROME_WEB_STORE_URL}
   >
-    <Download aria-hidden="true" size={18} stroke-width={2} />
+    <img
+      src="/brand/google-chrome.svg"
+      alt=""
+      width="18"
+      height="18"
+      aria-hidden="true"
+    />
     Add to Chrome
   </a>
   {
