@@ -107,7 +107,10 @@ export const CHROME_WEB_STORE_URL =
 
 `CHROME_WEB_STORE_URL` deliberately points to the latest GitHub release until
 the public Chrome Web Store listing exists. Replacing it must require changing
-only this constant.
+only this constant. While the fallback is active, the required **Add to
+Chrome** CTA remains unchanged and nearby supporting copy states **Manual
+installation via GitHub until the Chrome Web Store listing is live.** This
+prevents the fallback link from implying a one-click store installation.
 
 The existing Context Ribbon mark and existing PNG icon files are copied
 byte-for-byte into the website's public assets. They are not redrawn or
@@ -135,6 +138,10 @@ The hero contains:
 - secondary CTA: **View source**;
 - trust row: **Local-first**, **No tracking**, **No servers**.
 
+Until the Chrome Web Store listing is public, concise text next to or directly
+below the primary CTA states **Manual installation via GitHub until the Chrome
+Web Store listing is live.**
+
 The product mockup is the dominant visual. It depicts a dark, anonymized
 Instagram Direct-style conversation with outgoing purple-blue bubbles and a
 floating DM2Text dialog. It must not contain real usernames, avatars, message
@@ -159,8 +166,8 @@ column on mobile:
 
 1. **Choose the endpoint** — Open the menu on the final message you want and
    select Copy context.
-2. **Pick the context** — Choose how many preceding messages you want DM2Text
-   to collect.
+2. **Pick the context** — Choose how many messages to include, ending at the
+   selected message.
 3. **Paste anywhere** — DM2Text puts a clean chronological transcript on your
    clipboard.
 
@@ -208,6 +215,13 @@ reading. The title is **DM2Text Privacy Policy** and the subtitle is **Last
 updated: August 10, 2026**.
 
 The policy is rendered with the following substance and wording:
+
+This is owner-approved policy text and must be reproduced verbatim. The
+implementation does not independently expand, qualify, or assert additional
+legal or compliance conclusions.
+
+DM2Text is a local-first browser extension that allows users to copy structured
+context from Instagram Direct conversations.
 
 ### Data handled
 
@@ -337,8 +351,11 @@ data package, or external font request is required for this two-page launch.
 
 ## Data flow and failure behavior
 
-All visible content and links are compiled into static HTML. No user data enters
-the website, and no runtime data path exists.
+All visible content and links are compiled into static HTML. The authored site
+collects no user data and has no application-level data flow. It includes no
+forms, cookies, analytics, trackers, application storage, or client-side data
+submission. Ordinary HTTP request metadata may still be processed by the
+hosting provider as part of serving the static site.
 
 The primary CTA reads one build-time constant. Until the Chrome Web Store URL
 is available, that constant intentionally points to the latest GitHub release.
@@ -395,7 +412,8 @@ or external services.
 - The landing page matches the approved Editorial product spotlight direction.
 - All required copy, privacy facts, transcript formatting, legal attribution,
   and independence disclaimer are present.
-- The privacy policy preserves the user-provided substance and links.
+- The privacy policy reproduces the complete owner-approved text verbatim,
+  including its headings and clickable links.
 - The existing DM2Text mark is reused without redesign.
 - The site remains static and contains no hydration or external data requests.
 - The website is responsive and accessible across the required viewport sizes.
