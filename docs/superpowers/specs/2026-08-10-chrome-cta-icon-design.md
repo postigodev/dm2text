@@ -13,5 +13,5 @@ Replace the generic download icon in every website "Add to Chrome" CTA with the 
 
 ## Validation
 
-- Assert that the built landing page references the local Chrome logo.
+- Assert that every built "Add to Chrome" CTA references the local Chrome logo and that none retains the generic download icon.
 - Run `pnpm verify` from `website/` to check formatting, types, static build output, content assertions, and the zero-client-JavaScript constraint.
