@@ -1,0 +1,43 @@
+---
+import { Bug, CodeXml } from '@lucide/astro';
+
+import { GITHUB_URL, ISSUES_URL } from '../config';
+---
+
+<section class="px-5 py-24 sm:px-8">
+  <div
+    class="mx-auto flex max-w-6xl flex-col gap-10 lg:flex-row lg:items-center lg:justify-between"
+  >
+    <div class="max-w-2xl">
+      <p
+        class="text-xs font-extrabold uppercase tracking-[0.18em] text-accent-violet"
+      >
+        Open source
+      </p>
+      <h2 class="mt-3 text-4xl font-extrabold tracking-[-0.045em] sm:text-5xl">
+        Built in the open.
+      </h2>
+      <p class="mt-5 text-base leading-8 text-muted">
+        DM2Text is open source and licensed under GPL-3.0.
+      </p>
+      <p class="mt-3 text-sm leading-7 text-muted">
+        DM2Text is an independent project and is not affiliated with, endorsed
+        by, or sponsored by Instagram or Meta.
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <a
+        class="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-bold text-white"
+        href={GITHUB_URL}
+      >
+        <CodeXml aria-hidden="true" size={18} /> View on GitHub
+      </a>
+      <a
+        class="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-5 py-3 text-sm font-bold text-ink"
+        href={ISSUES_URL}
+      >
+        <Bug aria-hidden="true" size={18} /> Report an issue
+      </a>
+    </div>
+  </div>
+</section>

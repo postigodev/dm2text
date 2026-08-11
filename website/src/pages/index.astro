@@ -4,6 +4,8 @@ import { CodeXml } from '@lucide/astro';
 import ChromeCta from '../components/ChromeCta.astro';
 import HeroMockup from '../components/HeroMockup.astro';
 import HowItWorks from '../components/HowItWorks.astro';
+import OpenSource from '../components/OpenSource.astro';
+import PrivacyCallout from '../components/PrivacyCallout.astro';
 import { GITHUB_URL, HOME_DESCRIPTION, HOME_TITLE } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
@@ -61,5 +63,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </section>
     <HowItWorks />
+    <PrivacyCallout />
+    <OpenSource />
   </main>
 </BaseLayout>

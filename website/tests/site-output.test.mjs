@@ -6,7 +6,10 @@ const distUrl = new URL('../dist/', import.meta.url);
 
 const pageUrl = (path) => new URL(path, distUrl);
 const visibleText = (html) =>
-  html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  html
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
 test('build emits the two required static routes', async () => {
   await access(pageUrl('index.html'));
@@ -62,4 +65,22 @@ test('landing page explains the real copy workflow and output', async () => {
   assert.match(text, /Paste anywhere/);
   assert.match(text, /Person B: \[shared post by example\.account\]/);
   assert.match(text, /Caption: A visible post caption/);
+});
+
+test('landing page states privacy and independence precisely', async () => {
+  const home = await readFile(pageUrl('index.html'), 'utf8');
+  const text = visibleText(home);
+
+  assert.match(text, /Your DMs stay in your browser\./);
+  assert.match(text, /Local processing/);
+  assert.match(text, /No persistent storage/);
+  assert.match(text, /No analytics/);
+  assert.match(text, /No conversation uploads/);
+  assert.match(text, /Built in the open\./);
+  assert.match(text, /GPL-3\.0/);
+  assert.match(
+    text,
+    /not affiliated with, endorsed by, or sponsored by Instagram or Meta/,
+  );
+  assert.match(home, /https:\/\/github\.com\/postigodev\/dm2text\/issues/);
 });
