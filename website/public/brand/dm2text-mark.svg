@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 82 82" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="title description">
+  <title id="title">DM2Text Context Ribbon</title>
+  <desc id="description">A white conversation ribbon on a warm rounded square.</desc>
+  <defs>
+    <linearGradient id="ribbon" x1="10" y1="9" x2="72" y2="72" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff756b"/>
+      <stop offset="0.48" stop-color="#d65e9e"/>
+      <stop offset="1" stop-color="#7558d8"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="74" height="74" rx="25" fill="url(#ribbon)"/>
+  <path fill="#fff" fill-opacity="0.96" d="M23 26h31a8 8 0 0 1 8 8v11a8 8 0 0 1-8 8H40L29 62v-9h-6a8 8 0 0 1-8-8V34a8 8 0 0 1 8-8Z"/>
+  <path fill="none" stroke="#8b4aa9" stroke-linecap="round" stroke-width="4" d="M27 36h23M27 43h18"/>
+</svg>

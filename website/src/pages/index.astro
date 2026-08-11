@@ -1,15 +1,8 @@
 ---
-import '../styles/global.css';
+import { HOME_DESCRIPTION, HOME_TITLE } from '../config';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>DM2Text</title>
-  </head>
-  <body>
-    <main><h1>DM2Text</h1></main>
-  </body>
-</html>
+<BaseLayout title={HOME_TITLE} description={HOME_DESCRIPTION} canonicalPath="/">
+  <main><h1 class="sr-only">DM2Text</h1></main>
+</BaseLayout>

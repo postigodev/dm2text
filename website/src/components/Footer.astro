@@ -1,0 +1,20 @@
+---
+import { GITHUB_URL, ISSUES_URL } from '../config';
+---
+
+<footer class="border-t border-line bg-white/60">
+  <div
+    class="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-8 text-sm text-muted sm:px-8 lg:flex-row lg:items-center lg:justify-between"
+  >
+    <a class="flex items-center gap-2 font-bold text-ink" href="/">
+      <img src="/brand/dm2text-mark.svg" alt="" width="28" height="28" />
+      DM2Text
+    </a>
+    <nav aria-label="Footer navigation" class="flex flex-wrap gap-x-5 gap-y-2">
+      <a class="hover:text-ink" href={GITHUB_URL}>GitHub</a>
+      <a class="hover:text-ink" href="/privacy/">Privacy</a>
+      <a class="hover:text-ink" href={ISSUES_URL}>Report an issue</a>
+    </nav>
+    <p>Copyright © 2026 Piero A. Postigo Rocchetti.</p>
+  </div>
+</footer>

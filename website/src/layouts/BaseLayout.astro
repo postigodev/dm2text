@@ -1,0 +1,40 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_URL } from '../config';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+}
+
+const { title, description, canonicalPath } = Astro.props;
+const canonicalUrl = new URL(canonicalPath, SITE_URL).toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#faf9f6" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/icon-32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/brand/icon-96.png" />
+    <link rel="apple-touch-icon" href="/brand/icon-128.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DM2Text" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen antialiased">
+    <Header />
+    <slot />
+    <Footer />
+  </body>
+</html>

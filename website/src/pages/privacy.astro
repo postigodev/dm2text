@@ -1,15 +1,11 @@
 ---
-import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>DM2Text Privacy Policy</title>
-  </head>
-  <body>
-    <main><h1>DM2Text Privacy Policy</h1></main>
-  </body>
-</html>
+<BaseLayout
+  title="DM2Text Privacy Policy"
+  description="Learn how DM2Text processes conversation content locally without analytics, tracking, or conversation uploads."
+  canonicalPath="/privacy/"
+>
+  <main><h1 class="sr-only">DM2Text Privacy Policy</h1></main>
+</BaseLayout>
