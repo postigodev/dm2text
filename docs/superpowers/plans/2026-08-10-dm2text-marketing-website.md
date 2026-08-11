@@ -468,7 +468,7 @@ Create `website/src/components/ChromeCta.astro`:
 
 ```astro
 ---
-import { Chrome } from '@lucide/astro';
+import { Download } from '@lucide/astro';
 
 import {
   CHROME_WEB_STORE_URL,
@@ -490,7 +490,7 @@ const disclosure = compact
     class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-accent-rose to-accent-violet px-5 py-3 text-sm font-bold text-white shadow-[0_12px_28px_rgba(116,84,218,0.28)] transition-transform hover:-translate-y-0.5"
     href={CHROME_WEB_STORE_URL}
   >
-    <Chrome aria-hidden="true" size={18} strokeWidth={2} />
+    <Download aria-hidden="true" size={18} stroke-width={2} />
     Add to Chrome
   </a>
   {
@@ -509,7 +509,7 @@ Create `website/src/components/Header.astro`:
 
 ```astro
 ---
-import { Github } from '@lucide/astro';
+import { CodeXml } from '@lucide/astro';
 
 import { GITHUB_URL } from '../config';
 import ChromeCta from './ChromeCta.astro';
@@ -528,7 +528,7 @@ import ChromeCta from './ChromeCta.astro';
       <a class="hover:text-ink" href="/#how-it-works">How it works</a>
       <a class="hover:text-ink" href="/privacy/">Privacy</a>
       <a class="inline-flex items-center gap-1.5 hover:text-ink" href={GITHUB_URL}>
-        <Github aria-hidden="true" size={16} /> GitHub
+        <CodeXml aria-hidden="true" size={16} /> GitHub
       </a>
     </div>
     <div class="flex items-center gap-3">
@@ -817,7 +817,7 @@ Replace `website/src/pages/index.astro` with:
 
 ```astro
 ---
-import { Github } from '@lucide/astro';
+import { CodeXml } from '@lucide/astro';
 
 import ChromeCta from '../components/ChromeCta.astro';
 import HeroMockup from '../components/HeroMockup.astro';
@@ -840,7 +840,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="mt-8 flex flex-wrap items-start gap-4">
             <ChromeCta />
             <a class="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-5 py-3 text-sm font-bold text-ink hover:border-accent-violet/50" href={GITHUB_URL}>
-              <Github aria-hidden="true" size={18} /> View source
+              <CodeXml aria-hidden="true" size={18} /> View source
             </a>
           </div>
           <div class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold text-muted" aria-label="Trust facts">
@@ -931,12 +931,12 @@ Create `website/src/components/PrivacyCallout.astro`:
 
 ```astro
 ---
-import { BarChart3, CloudOff, Database, ShieldCheck } from '@lucide/astro';
+import { ChartNoAxesColumn, CloudOff, Database, ShieldCheck } from '@lucide/astro';
 
 const facts = [
   { label: 'Local processing', Icon: ShieldCheck },
   { label: 'No persistent storage', Icon: Database },
-  { label: 'No analytics', Icon: BarChart3 },
+  { label: 'No analytics', Icon: ChartNoAxesColumn },
   { label: 'No conversation uploads', Icon: CloudOff },
 ] as const;
 ---
@@ -966,7 +966,7 @@ Create `website/src/components/OpenSource.astro`:
 
 ```astro
 ---
-import { Bug, Github } from '@lucide/astro';
+import { Bug, CodeXml } from '@lucide/astro';
 
 import { GITHUB_URL, ISSUES_URL } from '../config';
 ---
@@ -980,7 +980,7 @@ import { GITHUB_URL, ISSUES_URL } from '../config';
       <p class="mt-3 text-sm leading-7 text-muted">DM2Text is an independent project and is not affiliated with, endorsed by, or sponsored by Instagram or Meta.</p>
     </div>
     <div class="flex flex-wrap gap-3">
-      <a class="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-bold text-white" href={GITHUB_URL}><Github aria-hidden="true" size={18} /> View on GitHub</a>
+      <a class="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-bold text-white" href={GITHUB_URL}><CodeXml aria-hidden="true" size={18} /> View on GitHub</a>
       <a class="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-5 py-3 text-sm font-bold text-ink" href={ISSUES_URL}><Bug aria-hidden="true" size={18} /> Report an issue</a>
     </div>
   </div>
