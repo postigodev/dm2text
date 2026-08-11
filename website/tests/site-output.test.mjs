@@ -5,6 +5,8 @@ import { test } from 'node:test';
 const distUrl = new URL('../dist/', import.meta.url);
 
 const pageUrl = (path) => new URL(path, distUrl);
+const visibleText = (html) =>
+  html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
 test('build emits the two required static routes', async () => {
   await access(pageUrl('index.html'));
@@ -41,4 +43,23 @@ test('build includes exact local brand assets', async () => {
   await access(pageUrl('brand/icon-32.png'));
   await access(pageUrl('brand/icon-96.png'));
   await access(pageUrl('brand/icon-128.png'));
+});
+
+test('landing page explains the real copy workflow and output', async () => {
+  const home = await readFile(pageUrl('index.html'), 'utf8');
+  const text = visibleText(home);
+
+  assert.match(text, /Local-first · Open source/);
+  assert.match(text, /Copy Instagram chats into clean, structured text\./);
+  assert.match(text, /Ends at the selected message/);
+  assert.match(text, /Messages to include/);
+  assert.match(home, />50</);
+  assert.match(text, /Choose the endpoint/);
+  assert.match(
+    text,
+    /Choose how many messages to include, ending at the selected message\./,
+  );
+  assert.match(text, /Paste anywhere/);
+  assert.match(text, /Person B: \[shared post by example\.account\]/);
+  assert.match(text, /Caption: A visible post caption/);
 });

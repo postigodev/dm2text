@@ -1,8 +1,65 @@
 ---
-import { HOME_DESCRIPTION, HOME_TITLE } from '../config';
+import { CodeXml } from '@lucide/astro';
+
+import ChromeCta from '../components/ChromeCta.astro';
+import HeroMockup from '../components/HeroMockup.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import { GITHUB_URL, HOME_DESCRIPTION, HOME_TITLE } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title={HOME_TITLE} description={HOME_DESCRIPTION} canonicalPath="/">
-  <main><h1 class="sr-only">DM2Text</h1></main>
+  <main class="overflow-hidden">
+    <section class="relative px-5 py-16 sm:px-8 sm:py-24">
+      <div
+        class="pointer-events-none absolute -right-32 top-0 -z-10 size-[42rem] rounded-full bg-[radial-gradient(circle,rgba(148,116,235,0.30),transparent_65%)] blur-2xl"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        class="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[0.82fr_1.18fr]"
+      >
+        <div>
+          <p
+            class="inline-flex rounded-full border border-line bg-white/80 px-3 py-2 text-xs font-extrabold uppercase tracking-[0.14em] text-[#685d7c]"
+          >
+            Local-first · Open source
+          </p>
+          <h1
+            class="mt-6 max-w-2xl text-5xl font-black leading-[0.98] tracking-[-0.06em] sm:text-6xl lg:text-7xl"
+          >
+            Copy Instagram chats into <span
+              class="bg-gradient-to-r from-accent-rose to-accent-violet bg-clip-text text-transparent"
+              >clean, structured text.</span
+            >
+          </h1>
+          <p class="mt-6 max-w-xl text-lg leading-8 text-muted">
+            DM2Text adds a native-looking Copy context action to Instagram
+            Direct. Select an end message, choose how much context you need, and
+            copy a chronological transcript — without sending your conversations
+            anywhere.
+          </p>
+          <div class="mt-8 flex flex-wrap items-start gap-4">
+            <ChromeCta />
+            <a
+              class="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-5 py-3 text-sm font-bold text-ink hover:border-accent-violet/50"
+              href={GITHUB_URL}
+            >
+              <CodeXml aria-hidden="true" size={18} /> View source
+            </a>
+          </div>
+          <div
+            class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold text-muted"
+            aria-label="Trust facts"
+          >
+            <span>✓ Local-first</span><span>✓ No tracking</span><span
+              >✓ No servers</span
+            >
+          </div>
+        </div>
+        <HeroMockup />
+      </div>
+    </section>
+    <HowItWorks />
+  </main>
 </BaseLayout>
