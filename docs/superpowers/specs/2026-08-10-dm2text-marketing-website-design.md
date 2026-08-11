@@ -123,7 +123,10 @@ reinterpreted.
 The header contains the existing icon, the DM2Text wordmark, links to
 `#how-it-works`, `/privacy`, and GitHub, plus the primary **Add to Chrome** CTA.
 On narrow screens, it preserves the brand, Privacy link, and CTA without adding
-a JavaScript menu.
+a JavaScript menu. While the CTA uses the GitHub fallback, its compact header
+presentation includes the visible supporting label **via GitHub for now**. This
+label remains legible on narrow screens rather than moving into a hover-only
+tooltip.
 
 ### Hero
 
@@ -140,7 +143,9 @@ The hero contains:
 
 Until the Chrome Web Store listing is public, concise text next to or directly
 below the primary CTA states **Manual installation via GitHub until the Chrome
-Web Store listing is live.**
+Web Store listing is live.** Every other **Add to Chrome** CTA, including the
+compact header CTA, carries visible fallback disclosure; no disclosure may
+depend solely on hover, `title`, or assistive text.
 
 The product mockup is the dominant visual. It depicts a dark, anonymized
 Instagram Direct-style conversation with outgoing purple-blue bubbles and a
@@ -211,14 +216,18 @@ the issue tracker, and **Copyright © 2026 Piero A. Postigo Rocchetti.**
 
 `/privacy` uses the shared header, footer, typography, focus states, and color
 system. Its content column is narrower than the landing page and optimized for
-reading. The title is **DM2Text Privacy Policy** and the subtitle is **Last
-updated: August 10, 2026**.
+reading.
 
-The policy is rendered with the following substance and wording:
+Implementation guidance, not public policy copy: reproduce the text between the
+following boundary comments verbatim. Do not render this instruction or the
+boundary comments. The implementation does not independently expand, qualify,
+or assert legal or compliance conclusions beyond the owner-approved text.
 
-This is owner-approved policy text and must be reproduced verbatim. The
-implementation does not independently expand, qualify, or assert additional
-legal or compliance conclusions.
+<!-- BEGIN OWNER-APPROVED PUBLIC POLICY -->
+
+**DM2Text Privacy Policy**
+
+Last updated: August 10, 2026
 
 DM2Text is a local-first browser extension that allows users to copy structured
 context from Instagram Direct conversations.
@@ -303,6 +312,8 @@ For privacy questions or issues:
 Source code:
 
 <https://github.com/postigodev/dm2text>
+
+<!-- END OWNER-APPROVED PUBLIC POLICY -->
 
 Both URLs must render as clickable links.
 
