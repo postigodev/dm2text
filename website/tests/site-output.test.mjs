@@ -3,6 +3,7 @@ import { access, readdir, readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 
 const distUrl = new URL('../dist/', import.meta.url);
+const repositoryRootUrl = new URL('../../', import.meta.url);
 
 const pageUrl = (path) => new URL(path, distUrl);
 const visibleText = (html) =>
@@ -28,6 +29,15 @@ const walk = async (directory) => {
 test('build emits the two required static routes', async () => {
   await access(pageUrl('index.html'));
   await access(pageUrl('privacy/index.html'));
+});
+
+test('website build does not depend on generated WXT configuration', async () => {
+  const rootTsconfig = JSON.parse(
+    await readFile(new URL('tsconfig.json', repositoryRootUrl), 'utf8'),
+  );
+
+  assert.notEqual(rootTsconfig.extends, './.wxt/tsconfig.json');
+  assert.ok(rootTsconfig.include.includes('.wxt/wxt.d.ts'));
 });
 
 test('baseline pages render recognizable content', async () => {
