@@ -132,7 +132,7 @@ Create `website/package.json`:
     "prettier": "latest",
     "prettier-plugin-astro": "latest",
     "tailwindcss": "latest",
-    "typescript": "latest"
+    "typescript": "^6.0.0"
   }
 }
 ```
