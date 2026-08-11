@@ -124,9 +124,9 @@ The header contains the existing icon, the DM2Text wordmark, links to
 `#how-it-works`, `/privacy`, and GitHub, plus the primary **Add to Chrome** CTA.
 On narrow screens, it preserves the brand, Privacy link, and CTA without adding
 a JavaScript menu. While the CTA uses the GitHub fallback, its compact header
-presentation includes the visible supporting label **via GitHub for now**. This
-label remains legible on narrow screens rather than moving into a hover-only
-tooltip.
+presentation includes the visible supporting label **Manual install via
+GitHub**. This label remains legible on narrow screens rather than moving into
+a hover-only tooltip.
 
 ### Hero
 
