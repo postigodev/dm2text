@@ -84,3 +84,34 @@ test('landing page states privacy and independence precisely', async () => {
   );
   assert.match(home, /https:\/\/github\.com\/postigodev\/dm2text\/issues/);
 });
+
+test('privacy page renders the complete approved policy contract', async () => {
+  const privacy = await readFile(pageUrl('privacy/index.html'), 'utf8');
+  const text = visibleText(privacy);
+
+  const requiredText = [
+    'Last updated: August 10, 2026',
+    'Data handled',
+    'How the data is used',
+    'Local processing',
+    'Storage and retention',
+    'Data sharing',
+    'Analytics and tracking',
+    'Authentication',
+    'Permissions',
+    'Limited Use',
+    'Changes',
+    'Contact',
+    'message text',
+    'clipboardWrite',
+    'Chrome Web Store User Data Policy',
+  ];
+
+  for (const value of requiredText) assert.match(text, new RegExp(value));
+
+  assert.match(
+    privacy,
+    /href="https:\/\/github\.com\/postigodev\/dm2text\/issues"/,
+  );
+  assert.match(privacy, /href="https:\/\/github\.com\/postigodev\/dm2text"/);
+});

@@ -1,4 +1,5 @@
 ---
+import PrivacyPolicy from '../content/privacy-policy.md';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -7,5 +8,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Learn how DM2Text processes conversation content locally without analytics, tracking, or conversation uploads."
   canonicalPath="/privacy/"
 >
-  <main><h1 class="sr-only">DM2Text Privacy Policy</h1></main>
+  <main class="px-5 py-16 sm:px-8 sm:py-24">
+    <article
+      class="prose prose-slate mx-auto max-w-3xl prose-headings:tracking-tight prose-headings:text-ink prose-h1:text-4xl prose-h1:font-black prose-h1:tracking-[-0.05em] prose-h2:mt-12 prose-h2:text-2xl prose-h2:font-extrabold prose-p:leading-8 prose-a:font-semibold prose-a:text-accent-violet prose-a:underline-offset-4 prose-li:marker:text-accent-violet sm:prose-h1:text-5xl"
+    >
+      <PrivacyPolicy />
+    </article>
+  </main>
 </BaseLayout>
