@@ -289,6 +289,8 @@ import { test } from 'node:test';
 const distUrl = new URL('../dist/', import.meta.url);
 
 const pageUrl = (path) => new URL(path, distUrl);
+const visibleText = (html) =>
+  html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
 test('build emits the two required static routes', async () => {
   await access(pageUrl('index.html'));
@@ -684,17 +686,18 @@ Append to `website/tests/site-output.test.mjs`:
 ```js
 test('landing page explains the real copy workflow and output', async () => {
   const home = await readFile(pageUrl('index.html'), 'utf8');
+  const text = visibleText(home);
 
-  assert.match(home, /Local-first · Open source/);
-  assert.match(home, /Copy Instagram chats into clean, structured text\./);
-  assert.match(home, /Ends at the selected message/);
-  assert.match(home, /Messages to include/);
+  assert.match(text, /Local-first · Open source/);
+  assert.match(text, /Copy Instagram chats into clean, structured text\./);
+  assert.match(text, /Ends at the selected message/);
+  assert.match(text, /Messages to include/);
   assert.match(home, />50</);
-  assert.match(home, /Choose the endpoint/);
-  assert.match(home, /Choose how many messages to include, ending at the selected message\./);
-  assert.match(home, /Paste anywhere/);
-  assert.match(home, /Person B: \[shared post by example\.account\]/);
-  assert.match(home, /Caption: A visible post caption/);
+  assert.match(text, /Choose the endpoint/);
+  assert.match(text, /Choose how many messages to include, ending at the selected message\./);
+  assert.match(text, /Paste anywhere/);
+  assert.match(text, /Person B: \[shared post by example\.account\]/);
+  assert.match(text, /Caption: A visible post caption/);
 });
 ```
 
