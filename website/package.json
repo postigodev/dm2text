@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:output": "node --test tests/site-output.test.mjs",
-    "verify": "pnpm format:check && pnpm check && pnpm build && pnpm test:output"
+    "verify:static": "node scripts/verify-static-output.mjs",
+    "verify": "pnpm format:check && pnpm check && pnpm build && pnpm test:output && pnpm verify:static"
   },
   "dependencies": {
     "@lucide/astro": "latest",

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { access, readFile } from 'node:fs/promises';
+import { access, readdir, readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 
 const distUrl = new URL('../dist/', import.meta.url);
@@ -10,6 +10,20 @@ const visibleText = (html) =>
     .replace(/<[^>]*>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+
+const walk = async (directory) => {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const nested = await Promise.all(
+    entries.map(async (entry) => {
+      const url = new URL(
+        `${entry.name}${entry.isDirectory() ? '/' : ''}`,
+        directory,
+      );
+      return entry.isDirectory() ? walk(url) : [url];
+    }),
+  );
+  return nested.flat();
+};
 
 test('build emits the two required static routes', async () => {
   await access(pageUrl('index.html'));
@@ -114,4 +128,24 @@ test('privacy page renders the complete approved policy contract', async () => {
     /href="https:\/\/github\.com\/postigodev\/dm2text\/issues"/,
   );
   assert.match(privacy, /href="https:\/\/github\.com\/postigodev\/dm2text"/);
+});
+
+test('artifact has no hydrated client bundle or unintended HTML route', async () => {
+  const files = await walk(distUrl);
+  const relativePaths = files.map((url) =>
+    decodeURIComponent(url.pathname.split('/dist/')[1]),
+  );
+  const scripts = relativePaths.filter((path) => /\.(?:m?js)$/.test(path));
+  const pages = relativePaths.filter((path) => path.endsWith('.html')).sort();
+
+  assert.deepEqual(scripts, []);
+  assert.deepEqual(pages, ['index.html', 'privacy/index.html']);
+
+  for (const path of pages) {
+    const html = await readFile(pageUrl(path), 'utf8');
+    assert.doesNotMatch(
+      html,
+      /astro-island|client:(?:load|idle|visible|media|only)/,
+    );
+  }
 });
