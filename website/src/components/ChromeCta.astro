@@ -1,40 +1,16 @@
 ---
 import { CHROME_WEB_STORE_URL, IS_MANUAL_INSTALL } from '../config';
-
-interface Props {
-  compact?: boolean;
-}
-
-const { compact = false } = Astro.props;
-const disclosure = compact
-  ? 'Manual install via GitHub'
-  : 'Manual installation via GitHub until the Chrome Web Store listing is live.';
 ---
 
-<div
-  class:list={[
-    'flex flex-col',
-    compact ? 'items-end gap-1' : 'items-start gap-2',
-  ]}
->
-  <a
-    class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-accent-rose to-accent-violet px-5 py-3 text-sm font-bold text-white shadow-[0_12px_28px_rgba(116,84,218,0.28)] transition-transform hover:-translate-y-0.5"
-    href={CHROME_WEB_STORE_URL}
-  >
-    <img
+<div class="chrome-cta">
+  <a class="primary" href={CHROME_WEB_STORE_URL}
+    ><img
       src="/brand/google-chrome.svg"
       alt=""
       width="18"
       height="18"
       aria-hidden="true"
-    />
-    Add to Chrome
-  </a>
-  {
-    IS_MANUAL_INSTALL && (
-      <span class:list={['text-muted', compact ? 'text-[0.68rem]' : 'text-xs']}>
-        {disclosure}
-      </span>
-    )
-  }
+    />Add to Chrome</a
+  >
+  {IS_MANUAL_INSTALL && <span>Manual install via GitHub</span>}
 </div>

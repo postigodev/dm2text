@@ -1,18 +1,120 @@
 ---
-import PrivacyPolicy from '../content/privacy-policy.md';
+import { GITHUB_URL, ISSUES_URL } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="DM2Text Privacy Policy"
-  description="Learn how DM2Text processes conversation content locally without analytics, tracking, or conversation uploads."
+  title="Privacy — DM2Text"
+  description="DM2Text privacy policy."
   canonicalPath="/privacy/"
 >
-  <main class="px-5 py-16 sm:px-8 sm:py-24">
-    <article
-      class="prose prose-slate mx-auto max-w-3xl prose-headings:tracking-tight prose-headings:text-ink prose-h1:text-4xl prose-h1:font-black prose-h1:tracking-[-0.05em] prose-h2:mt-12 prose-h2:text-2xl prose-h2:font-extrabold prose-p:leading-8 prose-a:font-semibold prose-a:text-accent-violet prose-a:underline-offset-4 prose-li:marker:text-accent-violet sm:prose-h1:text-5xl"
-    >
-      <PrivacyPolicy />
+  <main>
+    <article class="document">
+      <header class="document-header">
+        <h1>Privacy</h1><p class="updated">Last updated August 10, 2026</p><p
+          class="lede"
+        >
+          DM2Text is a browser extension for copying structured context from
+          Instagram Direct conversations. Conversation content is processed
+          locally in your browser.
+        </p>
+      </header>
+      <section class="policy-section">
+        <h2>Data handled</h2><p>
+          When you start a Copy context session, DM2Text may temporarily process
+          information visible in the Instagram Direct interface, including:
+        </p><ul>
+          <li>message text</li><li>sender names or usernames</li><li>
+            visible timestamps
+          </li><li>reply context</li><li>media labels</li><li>
+            shared-post information or captions when visible
+          </li>
+        </ul>
+      </section>
+      <section class="policy-section">
+        <h2>Use</h2><p>
+          This information is used only to generate the transcript you
+          requested.
+        </p>
+      </section>
+      <section class="policy-section">
+        <h2>Local processing</h2><p>
+          DM2Text processes conversation content locally in your browser. It
+          does not transmit conversation content to the developer or to external
+          servers.
+        </p><p>
+          DM2Text does not initiate network requests for the purpose of
+          collecting, storing, analyzing, or transmitting your conversation
+          data.
+        </p>
+      </section>
+      <section class="policy-section">
+        <h2>Storage</h2><p>
+          Conversation data is not persistently stored by DM2Text.
+        </p><p>
+          It exists temporarily in page memory while a copy session is active
+          and is discarded after the operation completes.
+        </p><p>
+          The requested transcript is written to your operating-system
+          clipboard. Clipboard contents may remain available to the operating
+          system and other applications until you replace or clear them.
+        </p>
+      </section>
+      <section class="policy-section">
+        <h2>Sharing</h2><p>
+          DM2Text does not sell, rent, share, or transfer user data to third
+          parties.
+        </p>
+      </section>
+      <section class="policy-section">
+        <h2>Analytics</h2><p>
+          DM2Text does not use analytics, advertising trackers, telemetry, or
+          behavioral profiling.
+        </p>
+      </section>
+      <section class="policy-section">
+        <h2>Authentication</h2><p>
+          DM2Text does not collect or access Instagram passwords, authentication
+          credentials, or authentication tokens.
+        </p>
+      </section>
+      <section class="policy-section">
+        <h2>Permissions</h2><p>
+          DM2Text requests access to Instagram pages so it can identify and
+          process the conversation content required for the Copy context
+          feature.
+        </p><p>
+          The <code>clipboardWrite</code> permission is used only to place the transcript
+          you requested onto the clipboard.
+        </p>
+      </section>
+      <section class="policy-section">
+        <h2>Chrome Web Store Limited Use</h2><p>
+          DM2Text's use of user data complies with the Chrome Web Store User
+          Data Policy, including the Limited Use requirements. User data is used
+          only to provide DM2Text's disclosed single purpose.
+        </p>
+      </section>
+      <section class="policy-section">
+        <h2>Changes</h2><p>
+          If DM2Text's data-handling practices change, this policy will be
+          updated before those changes are released.
+        </p>
+      </section>
+      <section class="policy-section">
+        <h2>Contact</h2><p>
+          Privacy questions, bug reports, and the source code are handled
+          through the public GitHub repository.
+        </p><div class="contact">
+          <div class="contact-line">
+            <span>Issues</span><a href={ISSUES_URL}
+              >github.com/postigodev/dm2text/issues</a>
+          </div><div class="contact-line">
+            <span>Source</span><a href={GITHUB_URL}
+              >github.com/postigodev/dm2text</a>
+          </div>
+        </div>
+      </section>
     </article>
   </main>
 </BaseLayout>

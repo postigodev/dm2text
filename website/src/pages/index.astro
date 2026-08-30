@@ -1,69 +1,64 @@
 ---
-import { CodeXml } from '@lucide/astro';
-
 import ChromeCta from '../components/ChromeCta.astro';
-import HeroMockup from '../components/HeroMockup.astro';
-import HowItWorks from '../components/HowItWorks.astro';
-import OpenSource from '../components/OpenSource.astro';
-import PrivacyCallout from '../components/PrivacyCallout.astro';
 import { GITHUB_URL, HOME_DESCRIPTION, HOME_TITLE } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title={HOME_TITLE} description={HOME_DESCRIPTION} canonicalPath="/">
-  <main class="overflow-hidden">
-    <section class="relative px-5 py-16 sm:px-8 sm:py-24">
-      <div
-        class="pointer-events-none absolute -right-32 top-0 -z-10 size-[42rem] rounded-full bg-[radial-gradient(circle,rgba(148,116,235,0.30),transparent_65%)] blur-2xl"
-        aria-hidden="true"
-      >
-      </div>
-      <div
-        class="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[0.82fr_1.18fr]"
-      >
-        <div>
-          <p
-            class="inline-flex rounded-full border border-line bg-white/80 px-3 py-2 text-xs font-extrabold uppercase tracking-[0.14em] text-[#685d7c]"
-          >
-            Local-first · Open source
-          </p>
-          <h1
-            class="mt-6 max-w-2xl text-5xl font-black leading-[0.98] tracking-[-0.06em] sm:text-6xl lg:text-7xl"
-          >
-            Copy Instagram chats into <span
-              class="bg-gradient-to-r from-accent-rose to-accent-violet bg-clip-text text-transparent"
-              >clean, structured text.</span
-            >
-          </h1>
-          <p class="mt-6 max-w-xl text-lg leading-8 text-muted">
-            DM2Text adds a native-looking Copy context action to Instagram
-            Direct. Select an end message, choose how much context you need, and
-            copy a chronological transcript — without sending your conversations
-            anywhere.
-          </p>
-          <div class="mt-8 flex flex-wrap items-start gap-4">
-            <ChromeCta />
-            <a
-              class="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-5 py-3 text-sm font-bold text-ink hover:border-accent-violet/50"
-              href={GITHUB_URL}
-            >
-              <CodeXml aria-hidden="true" size={18} /> View source
-            </a>
+  <main class="home-main">
+    <div class="shell">
+      <div class="product">
+        <div class="demo">
+          <div class="windowbar">
+            <div class="traffic" aria-hidden="true">
+              <i></i><i></i><i></i>
+            </div><strong>DM2Text</strong><span></span>
           </div>
-          <div
-            class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold text-muted"
-            aria-label="Trust facts"
-          >
-            <span>✓ Local-first</span><span>✓ No tracking</span><span
-              >✓ No servers</span
-            >
+          <div class="demo-body">
+            <div class="instagram">
+              <img
+                src="/marketing/dm-example.png"
+                alt="An anonymized Instagram Direct conversation with DM2Text's Copy context action"
+              /><div class="copy-context">Copy context</div><div
+                class="arrow"
+                aria-hidden="true"
+              >
+                →
+              </div>
+            </div>
+            <div class="transcript">
+              <div class="transcript-head">
+                <span>clipboard.txt</span><span>plain text</span>
+              </div><pre><span class="time">[10:41 AM, Tuesday]</span> Alex: did you see the draft
+
+You: yep
+
+Alex: are you free now?
+
+<span class="reply">You (replying to Alex:
+are you free now?):</span>
+i'm at the office
+
+Alex: sounds good
+
+<span class="time">[10:44 AM, Tuesday]</span> You:
+sorry!</pre>
+            </div>
           </div>
         </div>
-        <HeroMockup />
+        <div class="home-copy">
+          <p>
+            <strong>DM2Text</strong> copies part of an Instagram Direct conversation
+            as plain text.
+          </p><div class="actions">
+            <ChromeCta /><a class="source" href={GITHUB_URL}>GitHub</a>
+          </div>
+        </div>
+        <p class="privacy-note">
+          The selected conversation is processed in the browser. DM2Text doesn't
+          upload or keep message content. <a href="/privacy/">Privacy policy</a>
+        </p>
       </div>
-    </section>
-    <HowItWorks />
-    <PrivacyCallout />
-    <OpenSource />
+    </div>
   </main>
 </BaseLayout>
