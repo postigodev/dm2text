@@ -53,13 +53,17 @@ test('home matches the reference product presentation', async () => {
   const visible = text(html);
   assert.match(html, /href="\/privacy\/"/);
   assert.match(html, /https:\/\/github\.com\/postigodev\/dm2text/);
-  assert.match(html, /src="\/marketing\/dm-example\.png"/);
+  assert.match(html, /data-dm2text-demo/);
+  assert.match(html, /data-copy-context/);
+  assert.match(html, /data-count-input/);
+  assert.doesNotMatch(html, /src="\/marketing\/dm-example\.png"/);
   assert.match(html, /src="\/brand\/google-chrome\.svg"/);
   assert.match(
     html,
     /href="https:\/\/chromewebstore\.google\.com\/detail\/dm2text\/gpedpddbcooaomkehnmpcjjghnbknpbd"/,
   );
   assert.match(visible, /Copy context/);
+  assert.match(visible, /Messages to include/);
   assert.match(visible, /clipboard\.txt plain text/);
   assert.match(
     visible,
