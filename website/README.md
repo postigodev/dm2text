@@ -25,9 +25,7 @@ The production files are written to `website/dist/`.
 
 ## Chrome Web Store URL
 
-`src/config.ts` exports `CHROME_WEB_STORE_URL`. It currently points to the latest GitHub release and causes every Add to Chrome CTA to display a manual-install disclosure.
-
-When the Chrome Web Store listing is public, replace only `CHROME_WEB_STORE_URL` with the listing URL. `IS_MANUAL_INSTALL` updates automatically.
+`src/config.ts` exports `CHROME_WEB_STORE_URL` with the public DM2Text listing. Every install CTA reads that shared value, and `IS_MANUAL_INSTALL` keeps the manual-install disclosure hidden while the store URL is active.
 
 ## Vercel
 

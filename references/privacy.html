@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+
+  <title>Privacy — DM2Text</title>
+
+  <meta
+    name="description"
+    content="DM2Text privacy policy."
+  />
+
+  <meta name="theme-color" content="#f7f7f5" />
+
+  <style>
+    :root {
+      --page: #f7f7f5;
+      --ink: #171717;
+      --secondary: #66645f;
+      --tertiary: #92908a;
+      --line: #d9d8d4;
+      --line-soft: #e9e8e4;
+      --purple: #7355c5;
+
+      --width: 1050px;
+      --article: 680px;
+
+      --sans:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Helvetica,
+        Arial,
+        sans-serif;
+
+      --mono:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--page);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.92em;
+      color: #45433f;
+    }
+
+    .shell {
+      width: min(calc(100% - 40px), var(--width));
+      margin-inline: auto;
+    }
+
+    /* --------------------------------
+       site header
+    -------------------------------- */
+
+    .site-header {
+      height: 54px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .nav {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .wordmark {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+
+      color: var(--ink);
+      text-decoration: none;
+
+      font-size: 14px;
+      font-weight: 650;
+      letter-spacing: -0.015em;
+    }
+
+    .mark {
+      width: 25px;
+      height: 25px;
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+
+      font-size: 13px;
+    }
+
+    .site-nav a {
+      color: #565552;
+      text-decoration: none;
+    }
+
+    .site-nav a:hover {
+      color: #111;
+    }
+
+    .site-nav .install {
+      color: var(--purple);
+    }
+
+    /* --------------------------------
+       document
+    -------------------------------- */
+
+    .document {
+      width: min(calc(100% - 40px), var(--article));
+      margin: 0 auto;
+      padding: 84px 0 110px;
+    }
+
+    .document-header {
+      margin-bottom: 58px;
+    }
+
+    h1 {
+      margin: 0;
+
+      font-size: 42px;
+      line-height: 1.05;
+      font-weight: 650;
+      letter-spacing: -0.045em;
+    }
+
+    .updated {
+      margin: 13px 0 0;
+
+      color: var(--tertiary);
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .lede {
+      margin: 32px 0 0;
+
+      color: var(--secondary);
+      font-size: 17px;
+      line-height: 1.7;
+      letter-spacing: -0.008em;
+    }
+
+    .policy-section {
+      padding: 32px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .policy-section:last-of-type {
+      border-bottom: 1px solid var(--line);
+    }
+
+    h2 {
+      margin: 0 0 14px;
+
+      font-size: 17px;
+      line-height: 1.3;
+      font-weight: 650;
+      letter-spacing: -0.015em;
+    }
+
+    p {
+      margin: 0;
+
+      color: var(--secondary);
+      font-size: 15px;
+      line-height: 1.72;
+    }
+
+    p + p {
+      margin-top: 14px;
+    }
+
+    ul {
+      margin: 16px 0 0;
+      padding-left: 20px;
+
+      color: var(--secondary);
+      font-size: 15px;
+      line-height: 1.72;
+    }
+
+    li + li {
+      margin-top: 3px;
+    }
+
+    .document a {
+      color: var(--ink);
+      text-decoration: underline;
+      text-decoration-color: #aaa8a2;
+      text-underline-offset: 3px;
+    }
+
+    .document a:hover {
+      text-decoration-color: var(--ink);
+    }
+
+    .contact {
+      margin-top: 32px;
+    }
+
+    .contact-line {
+      display: grid;
+      grid-template-columns: 90px minmax(0, 1fr);
+      gap: 20px;
+
+      padding: 10px 0;
+
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .contact-line + .contact-line {
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .contact-line span {
+      color: var(--tertiary);
+    }
+
+    .contact-line a {
+      overflow-wrap: anywhere;
+      color: var(--secondary);
+      text-decoration: none;
+    }
+
+    .contact-line a:hover {
+      color: var(--ink);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* --------------------------------
+       footer
+    -------------------------------- */
+
+    .site-footer {
+      width: min(calc(100% - 40px), var(--width));
+      margin: 0 auto;
+
+      padding: 17px 0 24px;
+      border-top: 1px solid var(--line-soft);
+
+      color: var(--tertiary);
+      font-size: 11px;
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 17px;
+    }
+
+    .footer-links a {
+      color: #666;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* --------------------------------
+       responsive
+    -------------------------------- */
+
+    @media (max-width: 760px) {
+      .shell {
+        width: calc(100% - 30px);
+      }
+
+      .site-header {
+        height: 50px;
+      }
+
+      .site-nav {
+        gap: 18px;
+      }
+
+      .site-nav .privacy-nav {
+        display: none;
+      }
+
+      .document {
+        width: calc(100% - 36px);
+        padding: 58px 0 78px;
+      }
+
+      .document-header {
+        margin-bottom: 44px;
+      }
+
+      h1 {
+        font-size: 37px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .shell,
+      .site-footer {
+        width: calc(100% - 24px);
+      }
+
+      .site-nav .source-nav {
+        display: none;
+      }
+
+      .document {
+        width: calc(100% - 32px);
+        padding-top: 48px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .lede {
+        font-size: 16px;
+      }
+
+      .policy-section {
+        padding: 27px 0;
+      }
+
+      .contact-line {
+        grid-template-columns: 1fr;
+        gap: 3px;
+      }
+
+      .footer-row {
+        display: block;
+      }
+
+      .footer-links {
+        margin-top: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="shell nav">
+
+      <a href="/" class="wordmark">
+        <img
+          src="/brand/dm2text-mark.svg"
+          class="mark"
+          width="25"
+          height="25"
+          alt=""
+        />
+        DM2Text
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a
+          class="source-nav"
+          href="https://github.com/postigodev/dm2text"
+        >
+          Source
+        </a>
+
+        <a
+          class="privacy-nav"
+          href="/privacy"
+          aria-current="page"
+        >
+          Privacy
+        </a>
+
+        <a
+          class="install"
+          href="https://chromewebstore.google.com/detail/dm2text/gpedpddbcooaomkehnmpcjjghnbknpbd"
+        >
+          Install
+        </a>
+      </nav>
+
+    </div>
+  </header>
+
+
+  <main>
+
+    <article class="document">
+
+      <header class="document-header">
+        <h1>Privacy</h1>
+
+        <p class="updated">
+          Last updated August 10, 2026
+        </p>
+
+        <p class="lede">
+          DM2Text is a browser extension for copying structured context
+          from Instagram Direct conversations. Conversation content is
+          processed locally in your browser.
+        </p>
+      </header>
+
+
+      <section class="policy-section">
+        <h2>Data handled</h2>
+
+        <p>
+          When you start a Copy context session, DM2Text may temporarily
+          process information visible in the Instagram Direct interface,
+          including:
+        </p>
+
+        <ul>
+          <li>message text</li>
+          <li>sender names or usernames</li>
+          <li>visible timestamps</li>
+          <li>reply context</li>
+          <li>media labels</li>
+          <li>shared-post information or captions when visible</li>
+        </ul>
+      </section>
+
+
+      <section class="policy-section">
+        <h2>Use</h2>
+
+        <p>
+          This information is used only to generate the transcript you
+          requested.
+        </p>
+      </section>
+
+
+      <section class="policy-section">
+        <h2>Local processing</h2>
+
+        <p>
+          DM2Text processes conversation content locally in your browser.
+          It does not transmit conversation content to the developer or
+          to external servers.
+        </p>
+
+        <p>
+          DM2Text does not initiate network requests for the purpose of
+          collecting, storing, analyzing, or transmitting your
+          conversation data.
+        </p>
+      </section>
+
+
+      <section class="policy-section">
+        <h2>Storage</h2>
+
+        <p>
+          Conversation data is not persistently stored by DM2Text.
+        </p>
+
+        <p>
+          It exists temporarily in page memory while a copy session is
+          active and is discarded after the operation completes.
+        </p>
+
+        <p>
+          The requested transcript is written to your operating-system
+          clipboard. Clipboard contents may remain available to the
+          operating system and other applications until you replace or
+          clear them.
+        </p>
+      </section>
+
+
+      <section class="policy-section">
+        <h2>Sharing</h2>
+
+        <p>
+          DM2Text does not sell, rent, share, or transfer user data to
+          third parties.
+        </p>
+      </section>
+
+
+      <section class="policy-section">
+        <h2>Analytics</h2>
+
+        <p>
+          DM2Text does not use analytics, advertising trackers,
+          telemetry, or behavioral profiling.
+        </p>
+      </section>
+
+
+      <section class="policy-section">
+        <h2>Authentication</h2>
+
+        <p>
+          DM2Text does not collect or access Instagram passwords,
+          authentication credentials, or authentication tokens.
+        </p>
+      </section>
+
+
+      <section class="policy-section">
+        <h2>Permissions</h2>
+
+        <p>
+          DM2Text requests access to Instagram pages so it can identify
+          and process the conversation content required for the
+          Copy context feature.
+        </p>
+
+        <p>
+          The <code>clipboardWrite</code> permission is used only to
+          place the transcript you requested onto the clipboard.
+        </p>
+      </section>
+
+
+      <section class="policy-section">
+        <h2>Chrome Web Store Limited Use</h2>
+
+        <p>
+          DM2Text's use of user data complies with the Chrome Web Store
+          User Data Policy, including the Limited Use requirements.
+          User data is used only to provide DM2Text's disclosed single
+          purpose.
+        </p>
+      </section>
+
+
+      <section class="policy-section">
+        <h2>Changes</h2>
+
+        <p>
+          If DM2Text's data-handling practices change, this policy will
+          be updated before those changes are released.
+        </p>
+      </section>
+
+
+      <section class="policy-section">
+        <h2>Contact</h2>
+
+        <p>
+          Privacy questions, bug reports, and the source code are handled
+          through the public GitHub repository.
+        </p>
+
+        <div class="contact">
+
+          <div class="contact-line">
+            <span>Issues</span>
+
+            <a href="https://github.com/postigodev/dm2text/issues">
+              github.com/postigodev/dm2text/issues
+            </a>
+          </div>
+
+          <div class="contact-line">
+            <span>Source</span>
+
+            <a href="https://github.com/postigodev/dm2text">
+              github.com/postigodev/dm2text
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+    </article>
+
+  </main>
+
+
+  <footer class="site-footer">
+
+    <div class="footer-row">
+
+      <span>
+        DM2Text
+      </span>
+
+      <div class="footer-links">
+
+        <a href="https://github.com/postigodev/dm2text">
+          Source
+        </a>
+
+        <a href="https://github.com/postigodev/dm2text/issues">
+          Issues
+        </a>
+
+        <a href="/privacy">
+          Privacy
+        </a>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+</body>
+</html>

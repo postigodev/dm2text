@@ -39,14 +39,9 @@ One native-looking action opens one focused copy session.
 
 ## Install
 
-1. Download `dm2text-0.1.0-chrome.zip` from the [latest release](https://github.com/postigodev/dm2text/releases/latest).
-2. Extract the ZIP to a permanent folder.
-3. Open `chrome://extensions` in Chrome or another Chromium browser.
-4. Enable **Developer mode**.
-5. Choose **Load unpacked** and select the extracted folder.
+Install DM2Text from the [Chrome Web Store](https://chromewebstore.google.com/detail/dm2text/gpedpddbcooaomkehnmpcjjghnbknpbd).
 
-> [!IMPORTANT]
-> Keep the extracted folder after installation. The browser loads the extension from that location.
+For local development or manual installation, download the package from the [latest GitHub release](https://github.com/postigodev/dm2text/releases/latest), extract it to a permanent folder, enable **Developer mode** at `chrome://extensions`, and choose **Load unpacked**.
 
 ## Use
 

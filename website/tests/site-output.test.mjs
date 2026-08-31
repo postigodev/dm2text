@@ -55,13 +55,17 @@ test('home matches the reference product presentation', async () => {
   assert.match(html, /https:\/\/github\.com\/postigodev\/dm2text/);
   assert.match(html, /src="\/marketing\/dm-example\.png"/);
   assert.match(html, /src="\/brand\/google-chrome\.svg"/);
+  assert.match(
+    html,
+    /href="https:\/\/chromewebstore\.google\.com\/detail\/dm2text\/gpedpddbcooaomkehnmpcjjghnbknpbd"/,
+  );
   assert.match(visible, /Copy context/);
   assert.match(visible, /clipboard\.txt plain text/);
   assert.match(
     visible,
     /copies part of an Instagram Direct conversation as plain text/,
   );
-  assert.match(visible, /Manual install via GitHub/);
+  assert.doesNotMatch(visible, /Manual install via GitHub/);
   assert.doesNotMatch(visible, /bedant/i);
 });
 
@@ -88,6 +92,10 @@ test('privacy renders the approved policy in the reference layout', async () => 
   assert.match(
     html,
     /href="https:\/\/github\.com\/postigodev\/dm2text\/issues"/,
+  );
+  assert.match(
+    html,
+    /href="https:\/\/chromewebstore\.google\.com\/detail\/dm2text\/gpedpddbcooaomkehnmpcjjghnbknpbd"/,
   );
 });
 

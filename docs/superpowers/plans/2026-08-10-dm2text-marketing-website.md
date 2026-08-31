@@ -188,7 +188,7 @@ export const ISSUES_URL = `${GITHUB_URL}/issues`;
 export const GITHUB_RELEASES_URL = `${GITHUB_URL}/releases/latest`;
 
 // Replace only this value when the public Chrome Web Store listing is live.
-export const CHROME_WEB_STORE_URL = GITHUB_RELEASES_URL;
+export const CHROME_WEB_STORE_URL = "https://chromewebstore.google.com/detail/dm2text/gpedpddbcooaomkehnmpcjjghnbknpbd";
 
 export const IS_MANUAL_INSTALL =
   CHROME_WEB_STORE_URL === GITHUB_RELEASES_URL;
