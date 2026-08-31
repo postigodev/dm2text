@@ -54,17 +54,23 @@ test('home matches the reference product presentation', async () => {
   assert.match(html, /href="\/privacy\/"/);
   assert.match(html, /https:\/\/github\.com\/postigodev\/dm2text/);
   assert.match(html, /data-dm2text-demo/);
+  assert.match(html, /data-message-count="126"/);
   assert.match(html, /data-copy-context/);
+  assert.match(html, /data-unsend/);
   assert.match(html, /data-count-input/);
+  assert.match(html, /data-paste-zone/);
+  assert.match(html, /navigator\.clipboard\?\.writeText/);
   assert.doesNotMatch(html, /src="\/marketing\/dm-example\.png"/);
   assert.match(html, /src="\/brand\/google-chrome\.svg"/);
   assert.match(
     html,
     /href="https:\/\/chromewebstore\.google\.com\/detail\/dm2text\/gpedpddbcooaomkehnmpcjjghnbknpbd"/,
   );
+  assert.match(visible, /clara\.zk Clara Z\./);
   assert.match(visible, /Copy context/);
   assert.match(visible, /Messages to include/);
-  assert.match(visible, /clipboard\.txt plain text/);
+  assert.match(visible, /pasteboard\.txt plain text/);
+  assert.match(visible, /Nothing is inserted here automatically\./);
   assert.match(
     visible,
     /copies part of an Instagram Direct conversation as plain text/,
