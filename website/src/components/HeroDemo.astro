@@ -96,14 +96,14 @@ const messages = Array.from({ length: 126 }, (_, index) => {
       timestamp,
       reply,
       content: {
-        type: 'shared-post',
+        type: 'shared-post' as const,
         source: index % 46 === 11 ? 'theory.after.dark' : 'small.web.club',
         caption:
           index % 46 === 11
             ? 'the point is to change it, apparently'
             : 'interfaces should explain themselves',
       },
-      visual: { type: 'reel', image: MEDIA.keyboard },
+      visual: { type: 'reel' as const, image: MEDIA.keyboard },
     };
   }
 
@@ -113,8 +113,8 @@ const messages = Array.from({ length: 126 }, (_, index) => {
       from,
       timestamp,
       reply,
-      content: { type: 'media', label: 'photo' },
-      visual: { type: 'photo', image: MEDIA.desk },
+      content: { type: 'media' as const, label: 'photo' },
+      visual: { type: 'photo' as const, image: MEDIA.desk },
     };
   }
 
@@ -123,8 +123,8 @@ const messages = Array.from({ length: 126 }, (_, index) => {
     from,
     timestamp,
     reply,
-    content: { type: 'text', text },
-    visual: { type: 'text', text },
+    content: { type: 'text' as const, text },
+    visual: { type: 'text' as const, text },
   };
 });
 
