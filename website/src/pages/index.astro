@@ -1,5 +1,6 @@
 ---
 import ChromeCta from '../components/ChromeCta.astro';
+import HeroDemo from '../components/HeroDemo.astro';
 import { GITHUB_URL, HOME_DESCRIPTION, HOME_TITLE } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
@@ -8,44 +9,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <main class="home-main">
     <div class="shell">
       <div class="product">
-        <div class="demo">
-          <div class="windowbar">
-            <div class="traffic" aria-hidden="true">
-              <i></i><i></i><i></i>
-            </div><strong>DM2Text</strong><span></span>
-          </div>
-          <div class="demo-body">
-            <div class="instagram">
-              <img
-                src="/marketing/dm-example.png"
-                alt="An anonymized Instagram Direct conversation with DM2Text's Copy context action"
-              /><div class="copy-context">Copy context</div><div
-                class="arrow"
-                aria-hidden="true"
-              >
-                →
-              </div>
-            </div>
-            <div class="transcript">
-              <div class="transcript-head">
-                <span>clipboard.txt</span><span>plain text</span>
-              </div><pre><span class="time">[10:41 AM, Tuesday]</span> Alex: did you see the draft
-
-You: yep
-
-Alex: are you free now?
-
-<span class="reply">You (replying to Alex:
-are you free now?):</span>
-i'm at the office
-
-Alex: sounds good
-
-<span class="time">[10:44 AM, Tuesday]</span> You:
-sorry!</pre>
-            </div>
-          </div>
-        </div>
+        <HeroDemo />
         <div class="home-copy">
           <p>
             <strong>DM2Text</strong> copies part of an Instagram Direct conversation
