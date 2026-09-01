@@ -1,0 +1,1305 @@
+---
+import HeroDemoMessage from './HeroDemoMessage.astro';
+import {
+  HERO_COMPOSER_MEDIA,
+  HERO_MESSAGES,
+  HERO_PROFILE,
+  type HeroDemoMessage as HeroMessage,
+} from '../data/hero-conversation';
+
+const templateBase = {
+  key: 'template',
+  sender: 'you',
+  timestamp: { time: '10:42 AM', date: 'Wednesday' },
+  showDate: false,
+  showTime: false,
+} as const;
+const textTemplate: HeroMessage = {
+  ...templateBase,
+  content: { type: 'text', text: '' },
+};
+const photoTemplate: HeroMessage = {
+  ...templateBase,
+  content: {
+    type: 'media',
+    label: 'photo',
+    image: HERO_COMPOSER_MEDIA.photo,
+    alt: 'Zine proofs on a worktable',
+  },
+};
+const reelTemplate: HeroMessage = {
+  ...templateBase,
+  content: {
+    type: 'shared-post',
+    source: 'print.room',
+    caption: 'late night riso run',
+    image: HERO_COMPOSER_MEDIA.reel,
+    alt: 'Risograph printing Reel',
+  },
+};
+---
+
+<div class="demo" data-dm2text-demo data-message-count={HERO_MESSAGES.length}>
+  <div class="windowbar">
+    <div class="traffic" aria-hidden="true"><i></i><i></i><i></i></div>
+    <strong>DM2Text</strong><span></span>
+  </div>
+
+  <div class="demo-body">
+    <section class="ig-chat" aria-label="Interactive Instagram Direct demo">
+      <header class="ig-header">
+        <div class="profile">
+          <img
+            class="avatar"
+            src={HERO_PROFILE.avatar}
+            alt=""
+            width="44"
+            height="44"
+          />
+          <span class="profile-copy">
+            <strong>{HERO_PROFILE.username}</strong>
+            <small>{HERO_PROFILE.name}</small>
+          </span>
+        </div>
+
+        <div class="ig-header-actions" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <path
+              d="M6.7 2.6c.7-.5 1.6-.4 2.2.2 1.4 1.5 2.5 3.2 3.1 5.1.2.6.1 1.2-.2 1.7l-.7 1.2c-.2.3-.1.7.1.9a9.6 9.6 0 0 0 3.1 3.1c.3.2.6.2.9.1l1.2-.7c.5-.3 1.1-.4 1.7-.2 1.9.6 3.6 1.7 5.1 3.1.6.6.7 1.5.2 2.2a12 12 0 0 1-1.5 1.7c-.5.5-1.2.8-1.9.8-4.7.1-8.7-3.2-11.1-5.6C6.5 13.8 3.2 9.8 3.3 5.1c0-.7.3-1.4.8-1.9.8-.7 1.6-1.3 2.6-1.8Z"
+            ></path>
+          </svg>
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <rect x="2" y="4" width="15" height="16" rx="3"></rect>
+            <path d="m17 9 4-3v12l-4-3"></path>
+          </svg>
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 11v6M12 7.4h.01"></path>
+          </svg>
+        </div>
+      </header>
+
+      <div class="ig-messages" data-message-scroller>
+        {
+          HERO_MESSAGES.map((message, index) => (
+            <HeroDemoMessage message={message} index={index} />
+          ))
+        }
+      </div>
+
+      <template data-message-template="text">
+        <HeroDemoMessage message={textTemplate} />
+      </template>
+      <template data-message-template="media">
+        <HeroDemoMessage message={photoTemplate} />
+      </template>
+      <template data-message-template="shared-post">
+        <HeroDemoMessage message={reelTemplate} />
+      </template>
+
+      <form class="composer" data-composer>
+        <button class="composer-face" type="button" aria-label="Emoji">☺</button
+        >
+        <input
+          class="composer-input"
+          type="text"
+          autocomplete="off"
+          placeholder="Message..."
+          aria-label="Write a demo message"
+          data-message-input
+        />
+        <button
+          class="composer-tool"
+          type="button"
+          aria-label="Add demo photo"
+          title="Add photo"
+          data-add-photo
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <rect x="3" y="4" width="18" height="16" rx="3"></rect>
+            <circle cx="9" cy="10" r="2"></circle>
+            <path d="m5 18 5-5 3 3 2-2 4 4"></path>
+          </svg>
+        </button>
+        <button
+          class="composer-tool"
+          type="button"
+          aria-label="Add demo reel"
+          title="Add reel"
+          data-add-reel
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <rect x="3" y="3" width="18" height="18" rx="4"></rect>
+            <path d="m8 3 3 5M14 3l3 5M3 9h18"></path>
+            <path d="m10 13 5 3-5 3Z"></path>
+          </svg>
+        </button>
+        <button class="send-button" type="submit">Send</button>
+      </form>
+
+      <div class="demo-scrim" data-dialog-scrim hidden>
+        <section
+          class="copy-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="hero-copy-title"
+        >
+          <header class="dialog-header">
+            <div>
+              <h2 id="hero-copy-title">Copy context</h2>
+              <p>Ends at the selected message</p>
+            </div>
+            <span class="anchor-glyph" aria-hidden="true">⌁</span>
+          </header>
+
+          <div class="context-progress" aria-hidden="true">
+            <i></i><span></span><i class="active"></i>
+          </div>
+
+          <label class="count-label">
+            Messages to include
+            <input
+              type="number"
+              min="1"
+              max="999"
+              step="1"
+              value="25"
+              inputmode="numeric"
+              data-count-input
+            />
+          </label>
+
+          <p class="dialog-hint" data-dialog-hint></p>
+          <p class="dialog-error" data-dialog-error aria-live="polite"></p>
+
+          <div class="dialog-actions">
+            <button type="button" class="cancel" data-dialog-cancel
+              >Cancel</button
+            >
+            <button type="button" class="copy" data-dialog-copy>Copy</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="demo-toast" role="status" data-demo-toast hidden></div>
+    </section>
+
+    <section class="demo-transcript" aria-label="Paste copied transcript">
+      <header class="transcript-head">
+        <span>pasteboard.txt</span><span>plain text</span>
+      </header>
+
+      <textarea
+        data-paste-zone
+        spellcheck="false"
+        aria-label="Paste the copied DM2Text transcript here"
+        placeholder="Copy context on the left, then paste here.
+
+Ctrl+V / ⌘V"
+      ></textarea>
+
+      <footer class="paste-status" data-paste-status>
+        Nothing is inserted here automatically.
+      </footer>
+    </section>
+  </div>
+</div>
+
+<script is:inline>
+  document.querySelectorAll('[data-dm2text-demo]').forEach((demo) => {
+    const scroller = demo.querySelector('[data-message-scroller]');
+    const scrim = demo.querySelector('[data-dialog-scrim]');
+    const countInput = demo.querySelector('[data-count-input]');
+    const cancel = demo.querySelector('[data-dialog-cancel]');
+    const copy = demo.querySelector('[data-dialog-copy]');
+    const error = demo.querySelector('[data-dialog-error]');
+    const hint = demo.querySelector('[data-dialog-hint]');
+    const toast = demo.querySelector('[data-demo-toast]');
+    const pasteZone = demo.querySelector('[data-paste-zone]');
+    const pasteStatus = demo.querySelector('[data-paste-status]');
+    const composer = demo.querySelector('[data-composer]');
+    const messageInput = demo.querySelector('[data-message-input]');
+    const addPhoto = demo.querySelector('[data-add-photo]');
+    const addReel = demo.querySelector('[data-add-reel]');
+    const templates = new Map(
+      [...demo.querySelectorAll('[data-message-template]')].map((template) => [
+        template.dataset.messageTemplate,
+        template,
+      ]),
+    );
+
+    if (
+      !scroller ||
+      !scrim ||
+      !countInput ||
+      !cancel ||
+      !copy ||
+      !error ||
+      !hint ||
+      !toast ||
+      !pasteZone ||
+      !pasteStatus ||
+      !composer ||
+      !messageInput ||
+      !addPhoto ||
+      !addReel
+    )
+      return;
+
+    let anchorRow = null;
+    let dialogTrigger = null;
+    let partialSelection = null;
+    let toastTimer = 0;
+    let dynamicKey = 1;
+    let dynamicMinute = 10 * 60 + 42;
+
+    const getMessages = () => [
+      ...scroller.querySelectorAll('[data-demo-message]'),
+    ];
+
+    const closeMenus = (except) => {
+      demo.querySelectorAll('[data-message-menu]').forEach((menu) => {
+        if (menu === except) return;
+        menu.hidden = true;
+        const row = menu.closest('[data-demo-message]');
+        row
+          ?.querySelector('[data-menu-trigger]')
+          ?.setAttribute('aria-expanded', 'false');
+      });
+    };
+
+    const setDialog = (open, restoreFocus = true) => {
+      scrim.hidden = !open;
+      if (!open) {
+        partialSelection = null;
+        copy.textContent = 'Copy';
+        if (restoreFocus && dialogTrigger?.isConnected) dialogTrigger.focus();
+        return;
+      }
+      if (!anchorRow?.isConnected) return;
+      error.textContent = '';
+
+      const messages = getMessages();
+      const anchorIndex = messages.indexOf(anchorRow);
+      const available = Math.max(1, anchorIndex + 1);
+      countInput.max = '999';
+      countInput.value = String(Math.min(25, available));
+      hint.textContent = `${available} messages available through this one.`;
+      copy.textContent = 'Copy';
+      countInput.focus();
+      countInput.select();
+    };
+
+    const showToast = (message) => {
+      window.clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.hidden = false;
+      toastTimer = window.setTimeout(() => {
+        toast.hidden = true;
+      }, 2200);
+    };
+
+    const normalizeInline = (value) => value.trim().replace(/\s+/gu, ' ');
+    const normalizeMessageText = (value) =>
+      value
+        .replace(/\r\n?/gu, '\n')
+        .split('\n')
+        .map(normalizeInline)
+        .filter(Boolean)
+        .join('\\n');
+
+    const formatTimestamp = (time, date) => {
+      if (!time) return '';
+      return date ? `[${time}, ${date}] ` : `[${time}] `;
+    };
+
+    const formatReply = (row) => {
+      const preview = normalizeMessageText(row.dataset.replyPreview || '');
+      if (!preview) return '';
+      const sender = normalizeInline(row.dataset.replySender || '');
+      const context = sender ? `${sender}: ${preview}` : preview;
+      return ` (replying to ${context})`;
+    };
+
+    const formatContent = (row) => {
+      const type = row.dataset.contentType;
+      if (type === 'shared-post') {
+        const source = normalizeInline(row.dataset.source || '');
+        const caption = normalizeMessageText(row.dataset.caption || '');
+        const header = source ? `[shared post by ${source}]` : '[shared post]';
+        return caption ? `${header}\n  Caption: ${caption}` : header;
+      }
+
+      if (type === 'text') {
+        return normalizeMessageText(row.dataset.text || '');
+      }
+
+      const label = normalizeInline(row.dataset.label || '') || 'media';
+      if (type === 'media') return `[${label}]`;
+
+      const text = normalizeMessageText(row.dataset.text || '');
+      return text ? `${text} [${label}]` : `[${label}]`;
+    };
+
+    const formatTranscript = (rows) => {
+      let activeDate;
+
+      return rows
+        .map((row) => {
+          const explicitDate = normalizeInline(row.dataset.date || '');
+          if (explicitDate) activeDate = explicitDate;
+
+          const time = normalizeInline(row.dataset.time || '');
+          const timestamp = formatTimestamp(time, activeDate);
+          const sender = normalizeInline(row.dataset.sender || '') || 'Unknown';
+          const reply = formatReply(row);
+          const content = formatContent(row);
+          return `${timestamp}${sender}${reply}: ${content}`;
+        })
+        .join('\n');
+    };
+
+    const selectEndingAt = (rows, anchor, count) => {
+      const anchorIndex = rows.indexOf(anchor);
+      if (anchorIndex < 0) return [];
+      const normalizedCount = Number.isFinite(count)
+        ? Math.max(1, Math.floor(count))
+        : 1;
+      const startIndex = Math.max(0, anchorIndex - normalizedCount + 1);
+      return rows.slice(startIndex, anchorIndex + 1);
+    };
+
+    const copyText = async (text) => {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+
+      const fallback = document.createElement('textarea');
+      fallback.value = text;
+      fallback.setAttribute('readonly', '');
+      fallback.style.position = 'fixed';
+      fallback.style.opacity = '0';
+      document.body.append(fallback);
+      fallback.select();
+      const copied = document.execCommand('copy');
+      fallback.remove();
+      if (!copied) throw new Error('Copy command failed');
+    };
+
+    const formatDemoTime = (minutes) => {
+      const hour24 = Math.floor(minutes / 60) % 24;
+      const minute = minutes % 60;
+      const hour = hour24 % 12 || 12;
+      return `${hour}:${String(minute).padStart(2, '0')} ${hour24 < 12 ? 'AM' : 'PM'}`;
+    };
+
+    const appendOutgoing = ({ type, text = '' }) => {
+      const template = templates.get(type);
+      if (!(template instanceof HTMLTemplateElement)) return;
+      const row = template.content
+        .querySelector('[data-demo-message]')
+        ?.cloneNode(true);
+      if (!(row instanceof HTMLElement)) return;
+
+      row.dataset.key = `user-${dynamicKey++}`;
+      row.dataset.time = formatDemoTime(dynamicMinute++);
+      row.dataset.date = 'Wednesday';
+      row
+        .querySelector('[data-menu-trigger]')
+        ?.setAttribute(
+          'aria-label',
+          `Open actions for message ${getMessages().length + 1}`,
+        );
+
+      if (type === 'text') {
+        row.dataset.text = text;
+        const textNode = row.querySelector('[data-message-text]');
+        if (textNode) textNode.textContent = text;
+      }
+
+      closeMenus();
+      scroller.append(row);
+      scroller.scrollTop = scroller.scrollHeight;
+      showToast('Message added to the demo');
+    };
+
+    demo.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const trigger = target.closest('[data-menu-trigger]');
+      if (trigger) {
+        const row = trigger.closest('[data-demo-message]');
+        const menu = row?.querySelector('[data-message-menu]');
+        if (!row || !menu) return;
+        const shouldOpen = menu.hidden;
+        closeMenus(menu);
+        menu.hidden = !shouldOpen;
+        trigger.setAttribute('aria-expanded', String(shouldOpen));
+        anchorRow = row;
+        return;
+      }
+
+      const copyContext = target.closest('[data-copy-context]');
+      if (copyContext) {
+        const row = copyContext.closest('[data-demo-message]');
+        if (!row) return;
+        anchorRow = row;
+        dialogTrigger = row.querySelector('[data-menu-trigger]');
+        closeMenus();
+        setDialog(true);
+        return;
+      }
+
+      const unsend = target.closest('[data-unsend]');
+      if (unsend) {
+        const row = unsend.closest('[data-demo-message]');
+        if (!row) return;
+        const rowsBefore = getMessages();
+        const removedIndex = rowsBefore.indexOf(row);
+        row.remove();
+        anchorRow = null;
+        const messages = getMessages();
+        const focusRow = messages[removedIndex] || messages[removedIndex - 1];
+        focusRow?.querySelector('[data-menu-trigger]')?.focus();
+        showToast('Message removed — it will not be copied');
+        return;
+      }
+
+      if (!target.closest('[data-message-menu]')) closeMenus();
+    });
+
+    cancel.addEventListener('click', () => {
+      setDialog(false);
+    });
+
+    copy.addEventListener('click', async () => {
+      const requested = Number(countInput.value);
+      const max = Number(countInput.max);
+      if (!Number.isInteger(requested) || requested < 1 || requested > max) {
+        error.textContent = `Enter a whole number from 1 to ${max}.`;
+        return;
+      }
+
+      error.textContent = '';
+      let selected = partialSelection?.selected;
+      if (!selected) {
+        const rows = getMessages();
+        selected = selectEndingAt(rows, anchorRow, requested);
+        if (selected.length < requested) {
+          partialSelection = { requested, selected };
+          hint.textContent = `Found only ${selected.length} of ${requested} messages. Copy the available messages?`;
+          copy.textContent = `Copy ${selected.length}`;
+          return;
+        }
+      }
+      const transcript = formatTranscript(selected);
+
+      try {
+        await copyText(transcript);
+        setDialog(false, false);
+        pasteZone.focus();
+        showToast(`Copied ${selected.length} messages — paste on the right`);
+      } catch {
+        error.textContent =
+          'Clipboard access failed. Try again in a secure browser context.';
+      }
+    });
+
+    composer.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const text = messageInput.value.trim();
+      if (!text) return;
+      appendOutgoing({ type: 'text', text });
+      messageInput.value = '';
+      messageInput.focus();
+    });
+
+    addPhoto.addEventListener('click', () => {
+      appendOutgoing({ type: 'media' });
+    });
+
+    addReel.addEventListener('click', () => {
+      appendOutgoing({ type: 'shared-post' });
+    });
+
+    countInput.addEventListener('input', () => {
+      partialSelection = null;
+      copy.textContent = 'Copy';
+      error.textContent = '';
+    });
+
+    pasteZone.addEventListener('input', () => {
+      const value = pasteZone.value.trim();
+      pasteStatus.textContent = value
+        ? `${value.split(/\n/u).filter(Boolean).length} transcript lines pasted.`
+        : 'Nothing is inserted here automatically.';
+    });
+
+    scrim.addEventListener('click', (event) => {
+      if (event.target === scrim) setDialog(false);
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element) || demo.contains(target)) return;
+      closeMenus();
+    });
+
+    demo.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      if (!scrim.hidden) {
+        setDialog(false);
+        return;
+      }
+      const openTrigger = demo.querySelector(
+        '[data-menu-trigger][aria-expanded="true"]',
+      );
+      closeMenus();
+      openTrigger?.focus();
+    });
+
+    scroller.scrollTop = scroller.scrollHeight;
+  });
+</script>
+
+<style is:global>
+  .ig-chat {
+    position: relative;
+    min-width: 0;
+    height: 520px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--line);
+    background: rgb(12 16 20);
+    color: rgb(245 245 245);
+    font-family:
+      'Instagram Sans UI',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      Helvetica,
+      Arial,
+      sans-serif;
+  }
+
+  .ig-header {
+    height: 64px;
+    flex: 0 0 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0 16px;
+    border-bottom: 1px solid rgb(38 38 38);
+    background: rgb(12 16 20 / 96%);
+  }
+
+  .profile {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+
+  .avatar,
+  .mini-avatar {
+    flex: 0 0 auto;
+    border-radius: 50%;
+    object-fit: cover;
+    background: rgb(37 41 46);
+  }
+
+  .avatar {
+    width: 44px;
+    height: 44px;
+  }
+
+  .mini-avatar {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 1px;
+  }
+
+  .profile-copy {
+    min-width: 0;
+    display: grid;
+    gap: 1px;
+  }
+
+  .profile-copy strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 18px;
+  }
+
+  .profile-copy small {
+    color: rgb(168 168 168);
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .ig-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+  }
+
+  .ig-header-actions svg,
+  .composer svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+
+  .ig-header-actions svg:first-child {
+    fill: currentColor;
+    stroke: none;
+  }
+
+  .ig-messages {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 18px 18px 16px;
+    overscroll-behavior: contain;
+    scrollbar-color: rgb(89 94 101) transparent;
+    scrollbar-width: thin;
+  }
+
+  .ig-messages::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .ig-messages::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: rgb(89 94 101);
+    background-clip: padding-box;
+  }
+
+  .day-divider,
+  .time-divider {
+    align-self: center;
+    color: rgb(168 168 168);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .day-divider {
+    margin: 12px auto 2px;
+    font-weight: 600;
+  }
+
+  .time-divider {
+    margin: 1px auto 7px;
+  }
+
+  .message-row {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    min-height: 36px;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    box-sizing: border-box;
+  }
+
+  .message-row.incoming {
+    justify-content: flex-start;
+  }
+
+  .message-row.outgoing {
+    justify-content: flex-end;
+  }
+
+  .incoming .mini-avatar {
+    order: 1;
+  }
+
+  .incoming .bubble,
+  .incoming .media-card {
+    order: 2;
+  }
+
+  .bubble {
+    min-width: 0;
+    max-width: min(236px, calc(100% - 76px));
+    flex: 0 1 auto;
+    padding: 8px 12px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 20px;
+    overflow-wrap: anywhere;
+  }
+
+  .incoming .bubble {
+    background: rgb(37 41 46);
+  }
+
+  .outgoing .bubble {
+    background: rgb(74 93 249);
+  }
+
+  .reply-bubble {
+    display: grid;
+    gap: 5px;
+  }
+
+  .reply-preview {
+    display: grid;
+    padding-left: 8px;
+    border-left: 2px solid rgb(255 255 255 / 48%);
+    color: rgb(255 255 255 / 72%);
+    font-size: 11px;
+    line-height: 15px;
+  }
+
+  .reply-preview strong {
+    color: white;
+    font-size: 10px;
+    font-weight: 650;
+  }
+
+  .media-card {
+    position: relative;
+    width: 236px;
+    min-width: 0;
+    max-width: min(236px, calc(100% - 76px));
+    flex: 0 1 236px;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 18px;
+    background: rgb(37 41 46);
+  }
+
+  .media-card img {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .reel-card {
+    aspect-ratio: 9 / 13;
+  }
+
+  .reel-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 45%), transparent 45%);
+    pointer-events: none;
+  }
+
+  .reel-play {
+    position: absolute;
+    z-index: 2;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 48%);
+    color: white;
+    font-size: 16px;
+    padding-left: 2px;
+  }
+
+  .reel-tag {
+    position: absolute;
+    z-index: 2;
+    left: 12px;
+    top: 10px;
+    color: white;
+    font-size: 11px;
+    font-weight: 650;
+  }
+
+  .reel-copy {
+    position: absolute;
+    z-index: 2;
+    right: 12px;
+    bottom: 11px;
+    left: 12px;
+    min-width: 0;
+    display: grid;
+    gap: 1px;
+    color: white;
+    text-shadow: 0 1px 5px rgb(0 0 0 / 72%);
+  }
+
+  .reel-copy strong,
+  .reel-copy small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .reel-copy strong {
+    font-size: 11px;
+  }
+
+  .reel-copy small {
+    color: rgb(255 255 255 / 82%);
+    font-size: 10px;
+  }
+
+  .message-menu-trigger {
+    width: 32px;
+    height: 28px;
+    flex: 0 0 32px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 4px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    color: rgb(116 121 128);
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    letter-spacing: 1px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 100ms ease;
+  }
+
+  .incoming .message-menu-trigger {
+    order: 3;
+  }
+
+  .message-row:hover .message-menu-trigger,
+  .message-row:focus-within .message-menu-trigger,
+  .message-menu-trigger:hover,
+  .message-menu-trigger:focus-visible,
+  .message-menu-trigger[aria-expanded='true'] {
+    color: white;
+    background: rgb(255 255 255 / 8%);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .message-menu {
+    position: absolute;
+    z-index: 8;
+    bottom: 36px;
+    width: 178px;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 12px;
+    background: rgb(41 41 46);
+    box-shadow: 0 12px 32px rgb(0 0 0 / 42%);
+  }
+
+  .incoming .message-menu {
+    left: 46px;
+  }
+
+  .outgoing .message-menu {
+    right: 10px;
+  }
+
+  .message-menu[hidden] {
+    display: none;
+  }
+
+  .message-menu button {
+    width: 100%;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 13px;
+    border: 0;
+    color: rgb(245 245 245);
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    font-size: 12px;
+  }
+
+  .message-menu button:hover,
+  .message-menu button:focus-visible {
+    background: rgb(255 255 255 / 8%);
+  }
+
+  .message-menu button:first-child {
+    color: rgb(133 161 255);
+    font-weight: 650;
+  }
+
+  .message-menu button + button {
+    border-top: 1px solid rgb(255 255 255 / 7%);
+  }
+
+  .composer {
+    min-height: 48px;
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 14px 12px;
+    padding: 0 9px;
+    border: 1px solid rgb(43 48 54);
+    border-radius: 24px;
+    color: rgb(245 245 245);
+    background: rgb(12 16 20);
+  }
+
+  .composer-face,
+  .composer-tool,
+  .send-button {
+    flex: 0 0 auto;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .composer-face {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    font-size: 21px;
+  }
+
+  .composer-input {
+    min-width: 0;
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: white;
+    font: inherit;
+    font-size: 13px;
+  }
+
+  .composer-input::placeholder {
+    color: rgb(168 168 168);
+  }
+
+  .composer-tool {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border-radius: 50%;
+  }
+
+  .composer-tool:hover,
+  .composer-tool:focus-visible {
+    background: rgb(255 255 255 / 8%);
+  }
+
+  .send-button {
+    padding: 0 4px;
+    color: rgb(0 149 246);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .demo-scrim {
+    position: absolute;
+    z-index: 20;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: rgb(0 0 0 / 42%);
+    backdrop-filter: blur(1px);
+  }
+
+  .demo-scrim[hidden] {
+    display: none;
+  }
+
+  .copy-dialog {
+    width: min(360px, 100%);
+    padding: 20px;
+    border: 1px solid rgb(255 255 255 / 11%);
+    border-radius: 16px;
+    background: #191b20;
+    box-shadow: 0 18px 48px rgb(0 0 0 / 28%);
+    color: #f5f5f7;
+  }
+
+  .dialog-header {
+    height: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0;
+    border: 0;
+  }
+
+  .dialog-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .dialog-header p {
+    margin: 4px 0 0;
+    color: #989ca6;
+    font-size: 12px;
+  }
+
+  .anchor-glyph {
+    color: #c7c9cf;
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  .context-progress {
+    display: grid;
+    grid-template-columns: 8px 1fr 8px;
+    align-items: center;
+    margin: 18px 2px;
+  }
+
+  .context-progress i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #686d77;
+  }
+
+  .context-progress i.active {
+    background: #0095f6;
+  }
+
+  .context-progress span {
+    height: 1px;
+    background: #454953;
+  }
+
+  .count-label {
+    display: grid;
+    gap: 8px;
+    color: #c7c9cf;
+    font-size: 12px;
+    font-weight: 650;
+  }
+
+  .count-label input {
+    width: 100%;
+    height: 38px;
+    box-sizing: border-box;
+    padding: 0 11px;
+    border: 1px solid #343841;
+    border-radius: 9px;
+    outline: 0;
+    background: #101217;
+    color: #f5f5f7;
+    font: inherit;
+    font-size: 13px;
+  }
+
+  .count-label input:focus {
+    border-color: #555b68;
+  }
+
+  .dialog-hint,
+  .dialog-error {
+    min-height: 17px;
+    margin: 8px 0 0;
+    font-size: 11px;
+  }
+
+  .dialog-hint {
+    color: #989ca6;
+  }
+
+  .dialog-error {
+    color: #ff8c8c;
+  }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .dialog-actions button {
+    min-width: 70px;
+    height: 34px;
+    padding: 0 13px;
+    border: 0;
+    border-radius: 8px;
+    color: #f5f5f7;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 650;
+  }
+
+  .dialog-actions .cancel {
+    background: #2a2d34;
+  }
+
+  .dialog-actions .copy {
+    background: #0095f6;
+  }
+
+  .dialog-actions .copy:hover,
+  .dialog-actions .copy:focus-visible {
+    background: #1877f2;
+  }
+
+  .demo-toast {
+    position: absolute;
+    z-index: 30;
+    left: 50%;
+    bottom: 72px;
+    transform: translateX(-50%);
+    max-width: calc(100% - 32px);
+    padding: 8px 11px;
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 9px;
+    background: rgb(36 38 44 / 94%);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 28%);
+    color: white;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .demo-toast[hidden] {
+    display: none;
+  }
+
+  .demo-transcript {
+    min-width: 0;
+    height: 520px;
+    display: flex;
+    flex-direction: column;
+    background: #fbfbfd;
+  }
+
+  .transcript-head {
+    height: 43px;
+    flex: 0 0 43px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    border-bottom: 1px solid var(--line);
+    color: #6e6e73;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 10px;
+    letter-spacing: 0.01em;
+  }
+
+  .transcript-head span:first-child {
+    color: #1d1d1f;
+    font-weight: 650;
+  }
+
+  .demo-transcript textarea {
+    width: 100%;
+    flex: 1 1 auto;
+    resize: none;
+    box-sizing: border-box;
+    padding: 19px 18px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #1d1d1f;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .demo-transcript textarea::placeholder {
+    color: #a1a1a6;
+  }
+
+  .paste-status {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    border-top: 1px solid var(--line);
+    color: #86868b;
+    font-size: 10px;
+  }
+
+  @media (max-width: 760px) {
+    .ig-chat,
+    .demo-transcript {
+      height: 460px;
+    }
+
+    .ig-chat {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .ig-chat {
+      height: 430px;
+    }
+
+    .demo-transcript {
+      height: 350px;
+    }
+
+    .ig-header-actions {
+      gap: 12px;
+    }
+
+    .ig-messages {
+      padding-inline: 12px;
+    }
+
+    .message-menu {
+      width: 166px;
+    }
+
+    .composer {
+      margin-inline: 10px;
+    }
+
+    .composer-tool:nth-of-type(3) {
+      display: none;
+    }
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    .message-menu-trigger {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ig-messages {
+      scroll-behavior: auto;
+    }
+  }
+</style>

@@ -1,0 +1,142 @@
+---
+import { HERO_PROFILE, type HeroDemoMessage } from '../data/hero-conversation';
+
+interface Props {
+  message: HeroDemoMessage;
+  index?: number;
+}
+
+const { message, index = 0 } = Astro.props;
+const incoming = message.sender === 'clara';
+const sender = incoming ? HERO_PROFILE.name : 'You';
+const { content } = message;
+---
+
+{message.showDate && <div class="day-divider">{message.timestamp.date}</div>}
+{message.showTime && <div class="time-divider">{message.timestamp.time}</div>}
+
+<div
+  class:list={['message-row', incoming ? 'incoming' : 'outgoing']}
+  data-demo-message
+  data-key={message.key}
+  data-sender={sender}
+  data-time={message.timestamp.time}
+  data-date={message.timestamp.date}
+  data-content-type={content.type}
+  data-text={content.type === 'text' ? content.text : undefined}
+  data-label={content.type === 'media' ? content.label : undefined}
+  data-source={content.type === 'shared-post' ? content.source : undefined}
+  data-caption={content.type === 'shared-post' ? content.caption : undefined}
+  data-reply-sender={message.reply?.sender}
+  data-reply-preview={message.reply?.preview}
+>
+  {
+    incoming && (
+      <img
+        class="mini-avatar"
+        src={HERO_PROFILE.avatar}
+        alt=""
+        width="28"
+        height="28"
+        loading="lazy"
+      />
+    )
+  }
+
+  <button
+    class="message-menu-trigger"
+    type="button"
+    aria-label={`Open actions for message ${index + 1}`}
+    aria-expanded="false"
+    data-menu-trigger
+  >
+    •••
+  </button>
+
+  {
+    content.type === 'text' && (
+      <div class:list={['bubble', message.reply && 'reply-bubble']}>
+        {message.reply && (
+          <span class="reply-preview">
+            <strong>{message.reply.sender}</strong>
+            {message.reply.preview}
+          </span>
+        )}
+        <span data-message-text>{content.text}</span>
+      </div>
+    )
+  }
+
+  {
+    content.type === 'media' && (
+      <div class="media-card" data-media-card>
+        <img
+          src={content.image}
+          alt={content.alt}
+          loading="lazy"
+          data-media-image
+        />
+      </div>
+    )
+  }
+
+  {
+    content.type === 'shared-post' && (
+      <div class="media-card reel-card" data-media-card>
+        <img
+          src={content.image}
+          alt={content.alt}
+          loading="lazy"
+          data-media-image
+        />
+        <span class="reel-play" aria-hidden="true">
+          ▶
+        </span>
+        <span class="reel-tag">Reel</span>
+        <span class="reel-copy">
+          <strong data-media-source>{content.source}</strong>
+          <small data-media-caption>{content.caption}</small>
+        </span>
+      </div>
+    )
+  }
+
+  <div class="message-menu" data-message-menu hidden>
+    <button type="button" data-copy-context>
+      <svg
+        data-dm2text-icon
+        aria-hidden="true"
+        focusable="false"
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="8" y="7" width="10" height="12" rx="2"></rect>
+        <path d="M6 17H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"
+        ></path>
+      </svg>
+      <span>Copy context</span>
+    </button>
+    <button type="button" data-unsend>
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path>
+      </svg>
+      <span>Unsend</span>
+    </button>
+  </div>
+</div>
