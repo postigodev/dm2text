@@ -4,9 +4,10 @@ import { HERO_PROFILE, type HeroDemoMessage } from '../data/hero-conversation';
 interface Props {
   message: HeroDemoMessage;
   index?: number;
+  showAvatar?: boolean;
 }
 
-const { message, index = 0 } = Astro.props;
+const { message, index = 0, showAvatar = false } = Astro.props;
 const incoming = message.sender === 'clara';
 const sender = incoming ? HERO_PROFILE.name : 'You';
 const { content } = message;
@@ -29,16 +30,18 @@ const { content } = message;
   data-caption={content.type === 'shared-post' ? content.caption : undefined}
   data-reply-sender={message.reply?.sender}
   data-reply-preview={message.reply?.preview}
+  data-avatar-visible={incoming && showAvatar ? '' : undefined}
 >
   {
     incoming && (
       <img
-        class="mini-avatar"
+        class:list={['mini-avatar', !showAvatar && 'avatar-placeholder']}
         src={HERO_PROFILE.avatar}
         alt=""
         width="28"
         height="28"
         loading="lazy"
+        data-profile-avatar
       />
     )
   }

@@ -51,6 +51,10 @@ test('website build is independent of generated WXT configuration', async () => 
 test('home matches the reference product presentation', async () => {
   const html = await readFile(pageUrl('index.html'), 'utf8');
   const visible = text(html);
+  const messageRow = (key) =>
+    html.match(
+      new RegExp(`<div class="message-row [^"]+"[^>]*data-key="${key}"[^>]*>`),
+    )?.[0] ?? '';
   const css = (
     await Promise.all(
       [...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(
@@ -82,6 +86,9 @@ test('home matches the reference product presentation', async () => {
     /href="https:\/\/chromewebstore\.google\.com\/detail\/dm2text\/gpedpddbcooaomkehnmpcjjghnbknpbd"/,
   );
   assert.match(visible, /clara\.zk Clara Z\./);
+  assert.doesNotMatch(messageRow('seed-4'), /data-avatar-visible/);
+  assert.match(messageRow('seed-5'), /data-avatar-visible/);
+  assert.match(html, /updateMessageGroups/);
   assert.match(visible, /Tuesday 9:18 AM .*did you export the new version/);
   assert.match(html, /data-text="professional operation we're running here"/);
   assert.match(visible, /Swiss posters from the 1970s/);

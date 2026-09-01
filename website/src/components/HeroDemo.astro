@@ -82,7 +82,14 @@ const reelTemplate: HeroMessage = {
       <div class="ig-messages" data-message-scroller>
         {
           HERO_MESSAGES.map((message, index) => (
-            <HeroDemoMessage message={message} index={index} />
+            <HeroDemoMessage
+              message={message}
+              index={index}
+              showAvatar={
+                message.sender === 'clara' &&
+                HERO_MESSAGES[index + 1]?.sender !== message.sender
+              }
+            />
           ))
         }
       </div>
@@ -257,6 +264,18 @@ Ctrl+V / ⌘V"
       ...scroller.querySelectorAll('[data-demo-message]'),
     ];
 
+    const updateMessageGroups = () => {
+      const rows = getMessages();
+      rows.forEach((row, index) => {
+        const avatar = row.querySelector('[data-profile-avatar]');
+        if (!avatar) return;
+        const nextRow = rows[index + 1];
+        const showAvatar = row.dataset.sender !== nextRow?.dataset.sender;
+        row.toggleAttribute('data-avatar-visible', showAvatar);
+        avatar.classList.toggle('avatar-placeholder', !showAvatar);
+      });
+    };
+
     const closeMenus = (except) => {
       demo.querySelectorAll('[data-message-menu]').forEach((menu) => {
         if (menu === except) return;
@@ -420,6 +439,7 @@ Ctrl+V / ⌘V"
 
       closeMenus();
       scroller.append(row);
+      updateMessageGroups();
       scroller.scrollTop = scroller.scrollHeight;
       showToast('Message added to the demo');
     };
@@ -461,6 +481,7 @@ Ctrl+V / ⌘V"
         row.remove();
         anchorRow = null;
         const messages = getMessages();
+        updateMessageGroups();
         const focusRow = messages[removedIndex] || messages[removedIndex - 1];
         focusRow?.querySelector('[data-menu-trigger]')?.focus();
         showToast('Message removed — it will not be copied');
@@ -561,6 +582,7 @@ Ctrl+V / ⌘V"
       openTrigger?.focus();
     });
 
+    updateMessageGroups();
     scroller.scrollTop = scroller.scrollHeight;
   });
 </script>
@@ -612,6 +634,10 @@ Ctrl+V / ⌘V"
     border-radius: 50%;
     object-fit: cover;
     background: rgb(37 41 46);
+  }
+
+  .avatar-placeholder {
+    visibility: hidden;
   }
 
   .avatar {
