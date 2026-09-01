@@ -51,6 +51,13 @@ test('website build is independent of generated WXT configuration', async () => 
 test('home matches the reference product presentation', async () => {
   const html = await readFile(pageUrl('index.html'), 'utf8');
   const visible = text(html);
+  const css = (
+    await Promise.all(
+      [...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(
+        ([, href]) => readFile(pageUrl(href.slice(1)), 'utf8'),
+      ),
+    )
+  ).join('\n');
   assert.match(html, /href="\/privacy\/"/);
   assert.match(html, /https:\/\/github\.com\/postigodev\/dm2text/);
   assert.match(html, /data-dm2text-demo/);
@@ -66,6 +73,7 @@ test('home matches the reference product presentation', async () => {
   assert.match(html, /data-count-input/);
   assert.match(html, /data-paste-zone/);
   assert.match(html, /navigator\.clipboard\?\.writeText/);
+  assert.match(css, /\.message-row\s*\{[^}]*flex:\s*none;/s);
   assert.doesNotMatch(html, /src="\/marketing\/dm-example\.png"/);
   assert.doesNotMatch(html, /images\.unsplash\.com/);
   assert.match(html, /src="\/brand\/google-chrome\.svg"/);
